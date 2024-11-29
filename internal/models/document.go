@@ -4,11 +4,11 @@ import "gorm.io/gorm"
 
 type Document struct {
 	Model
-	TransactionID  string
+	TransactionID  ID
 	Transaction    *Transaction
-	AccountID      string
+	AccountID      ID
 	Account        *Account
-	AccountPartyID string
+	AccountPartyID ID
 	Type           DocumentType
 	Comment        string
 	Amount         Amount

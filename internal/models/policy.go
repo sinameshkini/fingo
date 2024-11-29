@@ -70,3 +70,43 @@ const (
 	FeeActual     FeeType = "actual"
 	FeePercentage FeeType = "percentage"
 )
+
+type GetSettingsRequest struct {
+	UserID        string `query:"user_id"`
+	AccountID     string `query:"account_id"`
+	AccountTypeID string `query:"account_type_id"`
+}
+
+type Settings struct {
+	Limits               Limits
+	Codes                map[ProcessCode]Code
+	DefaultAccountTypeID string
+}
+
+type Limits struct {
+	MinBalance       Amount
+	MaxBalance       Amount
+	NumberOfAccounts map[string]uint
+}
+
+type Code struct {
+	FeeType                 FeeType
+	FeeValue                Amount
+	MinAmountPerTransaction Amount
+	MaxAmountPerTransaction Amount
+	MaxAmountPerDay         Amount
+	MaxCountPerDay          int
+}
+
+func (c *Code) CalculateFeeAmount(raw Amount) (fee Amount) {
+	switch c.FeeType {
+	case FeeActual:
+		fee = c.FeeValue
+	case FeePercentage:
+		fee = raw * c.FeeValue / 100
+	default:
+		fee = 0
+	}
+
+	return
+}

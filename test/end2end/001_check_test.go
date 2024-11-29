@@ -1,6 +1,7 @@
 package end2end
 
 import (
+	"github.com/sinameshkini/fingo/internal/models"
 	"github.com/sinameshkini/fingo/pkg/utils"
 	"github.com/sinameshkini/fingo/test"
 	"testing"
@@ -16,6 +17,13 @@ func Test_TS001_Check(t *testing.T) {
 		t.FailNow()
 	}
 
+	settings, err := cli.GetPolicies(models.GetSettingsRequest{})
+	if err != nil {
+		t.Error(err.Error())
+		t.FailNow()
+	}
+	utils.PrintJson(settings)
+
 	currencies, err := cli.GetCurrencies()
 	if err != nil {
 		t.Error(err.Error())
@@ -29,4 +37,11 @@ func Test_TS001_Check(t *testing.T) {
 		t.FailNow()
 	}
 	utils.PrintJson(accountTypes)
+
+	accounts, err := cli.GetAccounts("admin")
+	if err != nil {
+		t.Error(err.Error())
+		t.FailNow()
+	}
+	utils.PrintJson(accounts)
 }

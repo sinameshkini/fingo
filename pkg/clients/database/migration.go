@@ -50,11 +50,11 @@ func Seed(db *gorm.DB) (err error) {
 
 	//	accountTypes
 	accountTypes := []*models.AccountType{
-		{
-			ID:          models.ACCOUNTTYPEGL,
-			Name:        "GL",
-			Description: "general ledger",
-		},
+		//{
+		//	ID:          models.ACCOUNTTYPEGL,
+		//	Name:        "GL",
+		//	Description: "general ledger",
+		//},
 		{
 			ID:          models.ACCOUNTTYPEWALLET,
 			Name:        "wallet",
@@ -65,31 +65,31 @@ func Seed(db *gorm.DB) (err error) {
 			Name:        "shadow",
 			Description: "Payment Gateway",
 		},
-		{
-			ID:          models.ACCOUNTTYPETERMINAL,
-			Name:        "terminal",
-			Description: "Merchant",
-		},
-		{
-			ID:          models.ACCOUNTTYPELOAN,
-			Name:        "loan",
-			Description: "Loan or Credit",
-		},
-		{
-			ID:          models.ACCOUNTTYPEINSTALLMENT,
-			Name:        "installment",
-			Description: "Installment",
-		},
-		{
-			ID:          models.ACCOUNTTYPEEXTERNALACCOUNT,
-			Name:        "bank account",
-			Description: "Bank Account",
-		},
-		{
-			ID:          models.ACCOUNTTYPEFEE,
-			Name:        "fee account",
-			Description: "Fee Account",
-		},
+		//{
+		//	ID:          models.ACCOUNTTYPETERMINAL,
+		//	Name:        "terminal",
+		//	Description: "Merchant",
+		//},
+		//{
+		//	ID:          models.ACCOUNTTYPELOAN,
+		//	Name:        "loan",
+		//	Description: "Loan or Credit",
+		//},
+		//{
+		//	ID:          models.ACCOUNTTYPEINSTALLMENT,
+		//	Name:        "installment",
+		//	Description: "Installment",
+		//},
+		//{
+		//	ID:          models.ACCOUNTTYPEEXTERNALACCOUNT,
+		//	Name:        "bank account",
+		//	Description: "Bank Account",
+		//},
+		//{
+		//	ID:          models.ACCOUNTTYPEFEE,
+		//	Name:        "fee account",
+		//	Description: "Fee Account",
+		//},
 	}
 
 	for _, a := range accountTypes {
@@ -243,34 +243,35 @@ func Seed(db *gorm.DB) (err error) {
 
 	//	accounts
 	accounts := []*models.Account{
-		{
-			Model:         models.Model{ID: models.ID2},
-			AccountTypeID: models.ACCOUNTTYPETERMINAL,
-			CurrencyID:    1,
-			Name:          "service provider terminal",
-			IsEnable:      true,
-		},
-		{
-			Model:         models.Model{ID: models.ID6},
-			AccountTypeID: models.ACCOUNTTYPETERMINAL,
-			CurrencyID:    1,
-			Name:          "wallet fee terminal",
-			IsEnable:      false,
-		},
+		//{
+		//	Model:         models.Model{ID: models.ID2},
+		//	AccountTypeID: models.ACCOUNTTYPETERMINAL,
+		//	CurrencyID:    1,
+		//	Name:          "service provider terminal",
+		//	IsEnable:      true,
+		//},
+		//{
+		//	Model:         models.Model{ID: models.ID6},
+		//	AccountTypeID: models.ACCOUNTTYPETERMINAL,
+		//	CurrencyID:    1,
+		//	Name:          "wallet fee terminal",
+		//	IsEnable:      false,
+		//},
 		{
 			Model:         models.Model{ID: models.ID3},
 			AccountTypeID: models.ACCOUNTTYPESHADOW,
 			CurrencyID:    1,
 			Name:          "payment gateway shadow",
 			IsEnable:      true,
+			UserID:        "admin",
 		},
-		{
-			Model:         models.Model{ID: models.ID4},
-			AccountTypeID: models.ACCOUNTTYPEFEE,
-			CurrencyID:    1,
-			Name:          "fee",
-			IsEnable:      true,
-		},
+		//{
+		//	Model:         models.Model{ID: models.ID4},
+		//	AccountTypeID: models.ACCOUNTTYPEFEE,
+		//	CurrencyID:    1,
+		//	Name:          "fee",
+		//	IsEnable:      true,
+		//},
 	}
 
 	for _, a := range accounts {

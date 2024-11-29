@@ -26,6 +26,12 @@ func Init(c *core.Core) error {
 	api.GET("/currencies", h.currencies)
 
 	api.POST("/accounts", h.newAccount)
+	api.GET("/accounts/:id", h.getAccount)
+	api.GET("/accounts", h.getAccounts)
+
+	api.GET("/policies", h.getPolicy)
+
+	api.POST("/transfer", h.transfer)
 
 	return e.Start(":4000")
 }

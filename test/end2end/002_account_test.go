@@ -8,7 +8,7 @@ import (
 )
 
 // ID:			TS002_Account
-// Scenario:	Create account
+// Scenario:	Create account and get account (info and balance)
 
 func Test_TS002_Account(t *testing.T) {
 	cli, err := test.Setup()
@@ -36,10 +36,16 @@ func Test_TS002_Account(t *testing.T) {
 
 	account, err := cli.CreateAccount(models.CreateAccount{
 		UserID:        "1234",
-		AccountTypeID: accountTypes[0].ID,
+		AccountTypeID: accountTypes[1].ID,
 		CurrencyID:    currencies[0].ID,
 		Name:          "Test",
 	})
+	if err != nil {
+		t.Error(err.Error())
+		t.FailNow()
+	}
+
+	account, err = cli.GetAccount(account.ID)
 	if err != nil {
 		t.Error(err.Error())
 		t.FailNow()

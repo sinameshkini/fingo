@@ -1,10 +1,7 @@
 package sdk
 
 import (
-	"errors"
 	"github.com/go-resty/resty/v2"
-	"github.com/sinameshkini/fingo/internal/models"
-	"github.com/sinameshkini/fingo/pkg/utils"
 )
 
 type Client struct {
@@ -17,29 +14,6 @@ func New(baseURL string) *Client {
 			SetDebug(true).
 			SetBaseURL(baseURL),
 	}
-}
-
-func (c *Client) CreateAccount(req models.CreateAccount) (resp *models.AccountResponse, err error) {
-	apiResp := &models.Response{}
-
-	r, err := c.rc.R().
-		SetBody(&req).
-		SetResult(apiResp).
-		SetError(apiResp).
-		Post("/accounts")
-	if err != nil {
-		return
-	}
-
-	if r.IsError() {
-		err = errors.New(r.String())
-	}
-
-	if err = utils.JsonAssertion(apiResp.Data, &resp); err != nil {
-		return
-	}
-
-	return
 }
 
 //

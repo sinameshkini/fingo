@@ -27,11 +27,23 @@ func New(db *gorm.DB) Repository {
 }
 
 type Repository interface {
+	CreateAccount(ctx context.Context, account models.Account) (*models.Account, error)
+	GetAccount(ctx context.Context, id models.ID) (*models.Account, error)
+	GetAccounts(ctx context.Context, userID string) ([]*models.Account, error)
+	GetBalance(ctx context.Context, accountID models.ID) (models.Amount, error)
+
+	NewTransaction(ctx context.Context) *gorm.DB
+	CommitTransaction(tx *gorm.DB) error
+	Initial(*gorm.DB, string, models.TransactionType, models.Amount, string) (*models.Transaction, error)
+	Transfer(tx *gorm.DB, amount models.Amount, txnID, debID, credID models.ID, comment string) error
+	Reverse(tx *gorm.DB, transaction *models.Transaction, reverseTxnID models.ID) error
+
+	GetTransaction(ctx context.Context, txnID models.ID) (*models.Transaction, error)
+	GetHistory(ctx context.Context, accountID models.ID) ([]*models.Document, error)
+
+	GetPolicies(ctx context.Context, userID, accountID, accountType string) ([]*models.Policy, error)
 	GetAccountTypes(ctx context.Context) ([]*models.AccountType, error)
 	GetAccountType(ctx context.Context, id string) (*models.AccountType, error)
 	GetCurrencies(ctx context.Context) ([]*models.Currency, error)
 	GetCurrency(ctx context.Context, id uint) (*models.Currency, error)
-
-	CreateAccount(ctx context.Context, account models.Account) (*models.Account, error)
-	GetAccount(ctx context.Context, id models.ID) (*models.Account, error)
 }
