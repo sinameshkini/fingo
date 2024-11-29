@@ -17,35 +17,7 @@ func Test_TS002_Account(t *testing.T) {
 		t.FailNow()
 	}
 
-	currencies, err := cli.GetCurrencies()
-	if err != nil {
-		t.Error(err.Error())
-		t.FailNow()
-	}
-
-	accountTypes, err := cli.GetAccountTypes()
-	if err != nil {
-		t.Error(err.Error())
-		t.FailNow()
-	}
-
-	if len(currencies) == 0 || len(accountTypes) == 0 {
-		t.Error("currency and account types are empty")
-		t.FailNow()
-	}
-
-	account, err := cli.CreateAccount(models.CreateAccount{
-		UserID:        "1234",
-		AccountTypeID: accountTypes[1].ID,
-		CurrencyID:    currencies[0].ID,
-		Name:          "Test",
-	})
-	if err != nil {
-		t.Error(err.Error())
-		t.FailNow()
-	}
-
-	account, err = cli.GetAccount(account.ID)
+	account, err := createAccount(cli, "user1", models.ACCOUNTTYPEWALLET, "user1")
 	if err != nil {
 		t.Error(err.Error())
 		t.FailNow()

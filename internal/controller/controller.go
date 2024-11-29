@@ -32,6 +32,7 @@ func Init(c *core.Core) error {
 	api.GET("/policies", h.getPolicy)
 
 	api.POST("/transfer", h.transfer)
+	api.POST("/reverse", h.reverse)
 
 	return e.Start(":4000")
 }

@@ -7,6 +7,7 @@ import (
 
 type Transaction struct {
 	Model
+	UserID      string
 	OrderID     string
 	Type        TransactionType
 	Amount      Amount
@@ -76,4 +77,9 @@ type TransferResponse struct {
 	Comment         string          `json:"comment"`
 	Amount          Amount          `json:"amount"`
 	Balance         Amount          `json:"balance"`
+}
+
+type ReverseRequest struct {
+	TransactionID string `json:"transaction_id"`
+	UserID        string `json:"user_id"`
 }

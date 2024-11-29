@@ -37,6 +37,7 @@ func (c *Core) Transfer(ctx context.Context, req models.TransferRequest) (resp *
 	}()
 
 	txn := &models.Transaction{
+		UserID:      req.UserID,
 		OrderID:     req.OrderID,
 		Type:        req.Type,
 		Amount:      req.TotalAmount,
@@ -102,52 +103,44 @@ func (c *Core) GetTransaction(ctx context.Context, userID string, txnID models.I
 	return
 }
 
-//func (s *svc) Reverse(ctx context.Context, orderID, transactionID string) (resp *models.TxnResponse, err error) {
-//	var (
-//		transaction *entities.Transaction
-//	)
-//
-//	// get txn by ID
-//	if transaction, err = c.repo.GetByID(ctx, transactionID); err != nil {
-//		return
-//	}
-//
-//	// check reverse exist
-//	if transaction.Reverse != nil {
-//		return nil, enums.ErrAlreadyExist
-//	}
-//
-//	// do reverse
-//	tx := c.repo.NewTransaction(ctx)
-//	defer func() {
-//		if r := recover(); r != nil {
-//			logstash.Get().Error(context.Background()).Commit(fmt.Sprintf("%+v", r))
-//			tx.Rollback()
-//		}
-//	}()
-//
-//	reverseTxn, err := c.repo.Initial(ctx, tx, orderID, enums.Reverse, transaction.Amount, enums.Reverse.Label())
-//	if err != nil {
-//		tx.Rollback()
-//		return
-//	}
-//
-//	if err = c.repo.Reverse(ctx, tx, transaction, reverseTxn.ID); err != nil {
-//		tx.Rollback()
-//		return
-//	}
-//
-//	// commit transaction
-//	if err = c.repo.CommitTransaction(ctx, tx); err != nil {
-//		return
-//	}
-//
-//	resp = &models.TxnResponse{
-//		TransactionID: reverseTxn.ID,
-//		OrderID:       reverseTxn.OrderID,
-//		Description:   reverseTxn.Description,
-//		Message:       "یازگشت تراکنش با موفقیت انجام شد",
-//	}
-//
-//	return
-//}
+func (c *Core) Reverse(ctx context.Context, req models.ReverseRequest) (resp *models.TransferResponse, err error) {
+	var (
+		transaction *models.Transaction
+	)
+
+	// get txn by ID
+	if transaction, err = c.repo.GetTransaction(ctx, models.ParseIDf(req.TransactionID)); err != nil {
+		return
+	}
+
+	if req.UserID != transaction.UserID {
+		return nil, models.ErrPermissionDenied
+	}
+
+	// do reverse
+	tx := c.repo.NewTransaction(ctx)
+	defer func() {
+		if r := recover(); r != nil {
+			log.Error(fmt.Sprintf("%+v", r))
+			tx.Rollback()
+		}
+	}()
+
+	reverseTxn, err := c.repo.Initial(tx, req.UserID, transaction.OrderID, models.Reverse, transaction.Amount, models.Reverse.Label())
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+
+	if err = c.repo.Reverse(tx, transaction, reverseTxn.ID); err != nil {
+		tx.Rollback()
+		return
+	}
+
+	// commit transaction
+	if err = c.repo.CommitTransaction(tx); err != nil {
+		return
+	}
+
+	return c.GetTransaction(ctx, reverseTxn.UserID, reverseTxn.ID)
+}

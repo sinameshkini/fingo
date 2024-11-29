@@ -27,10 +27,11 @@ func (r *repo) CommitTransaction(tx *gorm.DB) (err error) {
 	return tx.Commit().Error
 }
 
-func (r *repo) Initial(tx *gorm.DB, orderID string, txnType models.TransactionType, amount models.Amount,
+func (r *repo) Initial(tx *gorm.DB, userID, orderID string, txnType models.TransactionType, amount models.Amount,
 	description string) (txn *models.Transaction, err error) {
 
 	txn = &models.Transaction{
+		UserID:      userID,
 		OrderID:     orderID,
 		Type:        txnType,
 		Amount:      amount,

@@ -34,7 +34,7 @@ type Repository interface {
 
 	NewTransaction(ctx context.Context) *gorm.DB
 	CommitTransaction(tx *gorm.DB) error
-	Initial(*gorm.DB, string, models.TransactionType, models.Amount, string) (*models.Transaction, error)
+	Initial(*gorm.DB, string, string, models.TransactionType, models.Amount, string) (*models.Transaction, error)
 	Transfer(tx *gorm.DB, amount models.Amount, txnID, debID, credID models.ID, comment string) error
 	Reverse(tx *gorm.DB, transaction *models.Transaction, reverseTxnID models.ID) error
 

@@ -2,7 +2,6 @@
 
 **FinGo** is a simple core banking service written in Go.
 
-
 ---
 
 ## Features
