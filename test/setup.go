@@ -4,23 +4,13 @@ import (
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/sinameshkini/fingo/internal/models"
-	"github.com/sinameshkini/fingo/pkg/clients/cache"
 	"github.com/sinameshkini/fingo/pkg/clients/database"
 	"github.com/sinameshkini/fingo/pkg/sdk"
 	"github.com/sinameshkini/fingo/service"
 	"time"
 )
 
-var (
-	conf = service.Config{
-		Address:  ":4000",
-		Database: database.Config{},
-		Cache: cache.Config{
-			Host: "localhost:6379",
-			DB:   0,
-		},
-	}
-)
+var conf = service.DefaultConf
 
 func Setup() (cli *sdk.Client, err error) {
 	models.InitID(1)

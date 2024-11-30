@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	if err := service.Run(); err != nil {
+	if err := service.Run(service.DefaultConf); err != nil {
 		log.Fatal(err)
 	}
 }

@@ -6,6 +6,7 @@ require (
 	github.com/bsm/redislock v0.9.4
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/go-resty/resty/v2 v2.16.2
+	github.com/google/uuid v1.6.0
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/labstack/gommon v0.4.2
 	github.com/redis/go-redis/v9 v9.7.0
