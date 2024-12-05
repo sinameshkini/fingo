@@ -3,7 +3,7 @@ package sdk
 import (
 	"errors"
 	"github.com/sinameshkini/fingo/internal/models"
-	"github.com/sinameshkini/fingo/pkg/utils"
+	"github.com/sinameshkini/microkit/pkg/utils"
 )
 
 func (c *Client) Transfer(req models.TransferRequest) (resp *models.TransferResponse, err error) {

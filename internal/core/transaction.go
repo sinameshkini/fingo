@@ -20,7 +20,7 @@ func (c *Core) Transfer(ctx context.Context, req models.TransferRequest) (resp *
 	}
 
 	if !req.SkipLock {
-		key := c.lock.SetKeyPrefix(req.DebitAccountID)
+		key := fmt.Sprintf("fingo:lock:%s", req.DebitAccountID)
 
 		l, err = c.lock.Obtain(ctx, key, 10*time.Second, nil)
 		if err != nil {

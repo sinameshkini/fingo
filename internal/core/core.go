@@ -2,7 +2,7 @@ package core
 
 import (
 	"github.com/sinameshkini/fingo/internal/repository"
-	"github.com/sinameshkini/fingo/pkg/clients/cache"
+	"github.com/sinameshkini/microkit/pkg/clients/cache"
 	"log"
 )
 

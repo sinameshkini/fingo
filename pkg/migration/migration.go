@@ -1,28 +1,9 @@
-package database
+package migration
 
 import (
-	"github.com/labstack/gommon/log"
 	"github.com/sinameshkini/fingo/internal/models"
 	"gorm.io/gorm"
 )
-
-func Drop(db *gorm.DB) (err error) {
-	for _, t := range tables {
-		if err = db.Migrator().DropTable(t); err != nil {
-			log.Error(err.Error())
-		}
-	}
-
-	return nil
-}
-
-func Migrate(db *gorm.DB) (err error) {
-	if err = db.AutoMigrate(tables...); err != nil {
-		return err
-	}
-
-	return nil
-}
 
 var (
 	minAmount   models.Amount = 10000

@@ -3,34 +3,36 @@ package test
 import (
 	"fmt"
 	"github.com/go-resty/resty/v2"
+	"github.com/sinameshkini/fingo/internal/config"
 	"github.com/sinameshkini/fingo/internal/models"
-	"github.com/sinameshkini/fingo/pkg/clients/database"
+	"github.com/sinameshkini/fingo/pkg/migration"
 	"github.com/sinameshkini/fingo/pkg/sdk"
 	"github.com/sinameshkini/fingo/service"
+	"github.com/sinameshkini/microkit/pkg/clients/database"
 	"time"
 )
 
-var conf = service.DefaultConf
+var conf = config.DefaultConf
 
 func Setup() (cli *sdk.Client, err error) {
 	models.InitID(1)
 
 	baseURL := fmt.Sprintf("http://localhost%s/v1", conf.Address)
 
-	db, err := database.New(conf.Database)
+	db, err := database.NewDBWithConf(conf.Database)
 	if err != nil {
 		return
 	}
 
-	if err = database.Drop(db); err != nil {
+	if err = database.Drop(db, migration.Tables); err != nil {
 		return
 	}
 
-	if err = database.Migrate(db); err != nil {
+	if err = database.Migrate(db, migration.Tables); err != nil {
 		return
 	}
 
-	if err = database.Seed(db); err != nil {
+	if err = migration.Seed(db); err != nil {
 		return
 	}
 

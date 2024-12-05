@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/sinameshkini/fingo/internal/config"
 	"github.com/sinameshkini/fingo/internal/core"
 	"github.com/sinameshkini/fingo/internal/models"
 	"net/http"
@@ -11,7 +12,7 @@ type ctrl struct {
 	core *core.Core
 }
 
-func Init(c *core.Core) error {
+func Init(conf config.Config, c *core.Core) error {
 	e := echo.New()
 	h := &ctrl{core: c}
 
@@ -34,7 +35,7 @@ func Init(c *core.Core) error {
 	api.POST("/transfer", h.transfer)
 	api.POST("/reverse", h.reverse)
 
-	return e.Start(":4000")
+	return e.Start(conf.Address)
 }
 
 func response(c echo.Context, payload any) error {

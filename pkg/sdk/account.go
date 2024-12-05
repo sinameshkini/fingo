@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sinameshkini/fingo/internal/models"
-	"github.com/sinameshkini/fingo/pkg/utils"
+	"github.com/sinameshkini/microkit/pkg/utils"
 )
 
 func (c *Client) GetAccount(id string) (resp *models.AccountResponse, err error) {

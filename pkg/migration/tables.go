@@ -1,8 +1,8 @@
-package database
+package migration
 
 import "github.com/sinameshkini/fingo/internal/models"
 
-var tables = []interface{}{
+var Tables = []interface{}{
 	&models.Currency{},
 	&models.Account{},
 	&models.AccountType{},

@@ -2,8 +2,8 @@ package end2end
 
 import (
 	"github.com/sinameshkini/fingo/internal/models"
-	"github.com/sinameshkini/fingo/pkg/utils"
 	"github.com/sinameshkini/fingo/test"
+	"github.com/sinameshkini/microkit/pkg/utils"
 	"testing"
 )
 
