@@ -125,3 +125,7 @@ func NormalActor(baseURL, userID, shadow string, cnt int, amount models.Amount) 
 
 	return nil
 }
+
+func MakeUserID(id int) string {
+	return fmt.Sprintf("user%d", id)
+}

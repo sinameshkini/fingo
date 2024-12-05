@@ -9,6 +9,7 @@ import (
 	"github.com/sinameshkini/microkit/pkg/clients/cache"
 	"github.com/sinameshkini/microkit/pkg/clients/database"
 	"log"
+	"time"
 )
 
 func Run(conf config.Config) (err error) {
@@ -20,6 +21,26 @@ func Run(conf config.Config) (err error) {
 	if err != nil {
 		return
 	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		return
+	}
+
+	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
+	sqlDB.SetMaxIdleConns(10)
+
+	// SetMaxOpenConns sets the maximum number of open connections to the database.
+	sqlDB.SetMaxOpenConns(80)
+
+	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
+	sqlDB.SetConnMaxLifetime(time.Hour)
+
+	defer func() {
+		if err := sqlDB.Close(); err != nil {
+			log.Println(err)
+		}
+	}()
 
 	ca := cache.New(*conf.Cache)
 

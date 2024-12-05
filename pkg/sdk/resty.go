@@ -15,8 +15,8 @@ func New(baseURL string, debug bool) *Client {
 		rc: resty.New().
 			SetDebug(debug).
 			SetBaseURL(baseURL).
-			SetRetryCount(3).
-			SetRetryWaitTime(5 * time.Second).
+			SetRetryCount(5).
+			SetRetryWaitTime(time.Second * 2).
 			SetRetryMaxWaitTime(20 * time.Second).
 			AddRetryCondition(
 				func(r *resty.Response, err error) bool {
