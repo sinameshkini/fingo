@@ -95,6 +95,8 @@ func NormalActor(baseURL, userID, shadow string, cnt int, amount models.Amount) 
 		return
 	}
 
+	beforeBalance := account.Balance
+
 	for i := 0; i < cnt; i++ {
 		depositTxn, err := cli.Transfer(endpoint.TransferRequest{
 			UserID:          "admin",
@@ -118,7 +120,7 @@ func NormalActor(baseURL, userID, shadow string, cnt int, amount models.Amount) 
 		return
 	}
 
-	if account.Balance != amount*models.Amount(cnt) {
+	if account.Balance != beforeBalance+amount*models.Amount(cnt) {
 		return errors.New("not enough balance")
 	}
 
