@@ -33,11 +33,6 @@ func Seed(db *gorm.DB) (err error) {
 
 	//	accountTypes
 	accountTypes := []*entities.AccountType{
-		//{
-		//	ID:          models.ACCOUNTTYPEGL,
-		//	Name:        "GL",
-		//	Description: "general ledger",
-		//},
 		{
 			ID:          enums.ACCOUNTTYPEWALLET,
 			Name:        "wallet",
@@ -68,11 +63,11 @@ func Seed(db *gorm.DB) (err error) {
 		//	Name:        "bank account",
 		//	Description: "Bank Account",
 		//},
-		//{
-		//	ID:          models.ACCOUNTTYPEFEE,
-		//	Name:        "fee account",
-		//	Description: "Fee Account",
-		//},
+		{
+			ID:          enums.ACCOUNTTYPEFEE,
+			Name:        "fee account",
+			Description: "Fee Account",
+		},
 	}
 
 	for _, a := range accountTypes {
@@ -80,10 +75,6 @@ func Seed(db *gorm.DB) (err error) {
 			return
 		}
 	}
-
-	// user_group 0-9
-	// account_type 20-39
-	//
 
 	policies := []*entities.Policy{
 		{
@@ -226,20 +217,6 @@ func Seed(db *gorm.DB) (err error) {
 
 	//	accounts
 	accounts := []*entities.Account{
-		//{
-		//	Model:         models.Model{ID: models.SID2},
-		//	AccountTypeID: models.ACCOUNTTYPETERMINAL,
-		//	CurrencyID:    1,
-		//	Name:          "service provider terminal",
-		//	IsEnable:      true,
-		//},
-		//{
-		//	Model:         models.Model{ID: models.SID6},
-		//	AccountTypeID: models.ACCOUNTTYPETERMINAL,
-		//	CurrencyID:    1,
-		//	Name:          "wallet fee terminal",
-		//	IsEnable:      false,
-		//},
 		{
 			AccountTypeID: enums.ACCOUNTTYPESHADOW,
 			CurrencyID:    1,
@@ -247,17 +224,17 @@ func Seed(db *gorm.DB) (err error) {
 			IsEnable:      true,
 			UserID:        "admin",
 		},
-		//{
-		//	Model:         models.Model{ID: models.SID4},
-		//	AccountTypeID: models.ACCOUNTTYPEFEE,
-		//	CurrencyID:    1,
-		//	Name:          "fee",
-		//	IsEnable:      true,
-		//},
+		{
+			AccountTypeID: enums.ACCOUNTTYPEFEE,
+			CurrencyID:    1,
+			Name:          "fee",
+			IsEnable:      true,
+			UserID:        "admin",
+		},
 	}
 
 	for _, a := range accounts {
-		if err = db.FirstOrCreate(&a).Error; err != nil {
+		if err = db.Create(&a).Error; err != nil {
 			return
 		}
 	}
