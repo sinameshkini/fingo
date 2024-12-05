@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/uuid"
-	"github.com/sinameshkini/fingo/internal/repository/entities"
 	"github.com/sinameshkini/fingo/pkg/endpoint"
 	"github.com/sinameshkini/fingo/pkg/enums"
 	"github.com/sinameshkini/fingo/pkg/sdk"
@@ -84,7 +83,7 @@ func GetAccount(cli *sdk.Client, userID, accountType string) (resp *endpoint.Acc
 		}
 	}
 
-	return nil, entities.ErrNotFound
+	return nil, enums.ErrNotFound
 }
 
 func NormalActor(baseURL, userID, shadow string, cnt int, amount models.Amount) (err error) {

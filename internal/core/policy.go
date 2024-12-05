@@ -46,7 +46,7 @@ func (c *Core) GetSettings(ctx context.Context, req entities.GetSettingsRequest)
 }
 
 func validate(sp entities.SettingsP) (s *entities.Settings, err error) {
-	err = entities.ErrPermissionDenied
+	err = enums.ErrPermissionDenied
 	if sp.Limits == nil {
 		return
 	}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/sinameshkini/fingo/internal/repository/entities"
 	"github.com/sinameshkini/fingo/pkg/endpoint"
+	"github.com/sinameshkini/fingo/pkg/enums"
 	"github.com/sinameshkini/microkit/models"
 	"log"
 )
@@ -24,13 +25,13 @@ func (c *Core) NewAccount(ctx context.Context, req endpoint.CreateAccount) (resp
 	_, err = c.repo.GetAccountType(ctx, req.AccountTypeID)
 	if err != nil {
 		log.Println(err)
-		return nil, entities.ErrAccountTypeInvalid
+		return nil, enums.ErrAccountTypeInvalid
 	}
 
 	_, err = c.repo.GetCurrency(ctx, req.CurrencyID)
 	if err != nil {
 		log.Println(err)
-		return nil, entities.ErrCurrencyInvalid
+		return nil, enums.ErrCurrencyInvalid
 	}
 
 	accounts, err := c.repo.GetAccounts(ctx, req.UserID)
@@ -53,7 +54,7 @@ func (c *Core) NewAccount(ctx context.Context, req endpoint.CreateAccount) (resp
 	}
 
 	if count >= settings.Limits.NumberOfAccounts[req.AccountTypeID] {
-		return nil, entities.ErrPermissionDenied
+		return nil, enums.ErrPermissionDenied
 	}
 
 	account := &entities.Account{
@@ -68,7 +69,7 @@ func (c *Core) NewAccount(ctx context.Context, req endpoint.CreateAccount) (resp
 	account, err = c.repo.CreateAccount(ctx, *account)
 	if err != nil {
 		log.Println(err)
-		return nil, entities.ErrInternal
+		return nil, enums.ErrInternal
 	}
 
 	return c.GetAccount(ctx, account.ID)

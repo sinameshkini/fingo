@@ -2,6 +2,7 @@ package entities
 
 import (
 	"github.com/sinameshkini/fingo/pkg/endpoint"
+	"github.com/sinameshkini/fingo/pkg/enums"
 	"github.com/sinameshkini/microkit/models"
 	"gorm.io/gorm"
 )
@@ -40,7 +41,7 @@ func (m *Account) SetSettings(settings *Settings) {
 
 func (m *Account) GetSettings() (*Settings, error) {
 	if m.settings == nil {
-		return nil, ErrNotFound
+		return nil, enums.ErrNotFound
 	}
 
 	return m.settings, nil

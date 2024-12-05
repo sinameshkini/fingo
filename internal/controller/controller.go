@@ -5,6 +5,7 @@ import (
 	"github.com/sinameshkini/fingo/internal/config"
 	"github.com/sinameshkini/fingo/internal/core"
 	"github.com/sinameshkini/fingo/internal/repository/entities"
+	"github.com/sinameshkini/fingo/pkg/enums"
 	"net/http"
 )
 
@@ -47,9 +48,19 @@ func response(c echo.Context, payload any) error {
 }
 
 func responseError(c echo.Context, err error) error {
-	return c.JSON(http.StatusInternalServerError, entities.Response{
+	resp := entities.Response{
 		Code:    1,
 		Message: err.Error(),
-		Data:    nil,
-	})
+	}
+
+	httpCode, ok := enums.ErrHTTPCode[err]
+	if !ok {
+		httpCode = http.StatusInternalServerError
+	}
+
+	if errCode, ok := enums.ErrCode[err]; ok {
+		resp.Code = errCode
+	}
+
+	return c.JSON(httpCode, resp)
 }

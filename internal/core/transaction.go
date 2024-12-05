@@ -19,7 +19,7 @@ func (c *Core) Transfer(ctx context.Context, req endpoint.TransferRequest) (resp
 	)
 
 	if req.RawAmount+req.FeeAmount != req.TotalAmount {
-		return nil, entities.ErrInvalidRequest
+		return nil, enums.ErrInvalidRequest
 	}
 
 	if !req.SkipLock {
@@ -27,7 +27,7 @@ func (c *Core) Transfer(ctx context.Context, req endpoint.TransferRequest) (resp
 
 		l, err = c.lock.Obtain(ctx, key, 10*time.Second, nil)
 		if err != nil {
-			return
+			return nil, enums.ErrToManyRequests
 		}
 	}
 
@@ -100,7 +100,7 @@ func (c *Core) GetTransaction(ctx context.Context, userID string, txnID models.S
 
 	resp = txn.ToResponse(userID)
 	if resp == nil {
-		return nil, entities.ErrNotFound
+		return nil, enums.ErrNotFound
 	}
 
 	return
@@ -117,7 +117,7 @@ func (c *Core) Reverse(ctx context.Context, req endpoint.ReverseRequest) (resp *
 	}
 
 	if req.UserID != transaction.UserID {
-		return nil, entities.ErrPermissionDenied
+		return nil, enums.ErrPermissionDenied
 	}
 
 	// do reverse
