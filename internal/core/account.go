@@ -2,19 +2,21 @@ package core
 
 import (
 	"context"
-	"github.com/sinameshkini/fingo/internal/models"
+	"github.com/sinameshkini/fingo/internal/repository/entities"
+	"github.com/sinameshkini/fingo/pkg/endpoint"
+	"github.com/sinameshkini/microkit/models"
 	"log"
 )
 
-func (c *Core) GetAccountTypes(ctx context.Context) ([]*models.AccountType, error) {
+func (c *Core) GetAccountTypes(ctx context.Context) ([]*entities.AccountType, error) {
 	return c.repo.GetAccountTypes(ctx)
 }
 
-func (c *Core) GetCurrencies(ctx context.Context) ([]*models.Currency, error) {
+func (c *Core) GetCurrencies(ctx context.Context) ([]*entities.Currency, error) {
 	return c.repo.GetCurrencies(ctx)
 }
 
-func (c *Core) NewAccount(ctx context.Context, req models.CreateAccount) (resp *models.AccountResponse, err error) {
+func (c *Core) NewAccount(ctx context.Context, req endpoint.CreateAccount) (resp *endpoint.AccountResponse, err error) {
 	var (
 		count uint
 	)
@@ -22,13 +24,13 @@ func (c *Core) NewAccount(ctx context.Context, req models.CreateAccount) (resp *
 	_, err = c.repo.GetAccountType(ctx, req.AccountTypeID)
 	if err != nil {
 		log.Println(err)
-		return nil, models.ErrAccountTypeInvalid
+		return nil, entities.ErrAccountTypeInvalid
 	}
 
 	_, err = c.repo.GetCurrency(ctx, req.CurrencyID)
 	if err != nil {
 		log.Println(err)
-		return nil, models.ErrCurrencyInvalid
+		return nil, entities.ErrCurrencyInvalid
 	}
 
 	accounts, err := c.repo.GetAccounts(ctx, req.UserID)
@@ -42,7 +44,7 @@ func (c *Core) NewAccount(ctx context.Context, req models.CreateAccount) (resp *
 		}
 	}
 
-	settings, err := c.GetSettings(ctx, models.GetSettingsRequest{
+	settings, err := c.GetSettings(ctx, entities.GetSettingsRequest{
 		UserID:        req.UserID,
 		AccountTypeID: req.AccountTypeID,
 	})
@@ -51,10 +53,10 @@ func (c *Core) NewAccount(ctx context.Context, req models.CreateAccount) (resp *
 	}
 
 	if count >= settings.Limits.NumberOfAccounts[req.AccountTypeID] {
-		return nil, models.ErrPermissionDenied
+		return nil, entities.ErrPermissionDenied
 	}
 
-	account := &models.Account{
+	account := &entities.Account{
 		UserID:        req.UserID,
 		AccountTypeID: req.AccountTypeID,
 		CurrencyID:    req.CurrencyID,
@@ -66,13 +68,13 @@ func (c *Core) NewAccount(ctx context.Context, req models.CreateAccount) (resp *
 	account, err = c.repo.CreateAccount(ctx, *account)
 	if err != nil {
 		log.Println(err)
-		return nil, models.ErrInternal
+		return nil, entities.ErrInternal
 	}
 
 	return c.GetAccount(ctx, account.ID)
 }
 
-func (c *Core) GetAccount(ctx context.Context, id models.ID) (resp *models.AccountResponse, err error) {
+func (c *Core) GetAccount(ctx context.Context, id models.SID) (resp *endpoint.AccountResponse, err error) {
 	account, err := c.repo.GetAccount(ctx, id)
 	if err != nil {
 		return
@@ -84,7 +86,7 @@ func (c *Core) GetAccount(ctx context.Context, id models.ID) (resp *models.Accou
 	return
 }
 
-func (c *Core) GetAccounts(ctx context.Context, userID string) (resp []*models.AccountResponse, err error) {
+func (c *Core) GetAccounts(ctx context.Context, userID string) (resp []*endpoint.AccountResponse, err error) {
 	accounts, err := c.repo.GetAccounts(ctx, userID)
 	if err != nil {
 		return

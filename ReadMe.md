@@ -7,6 +7,7 @@
 ## Features
 - Manage user accounts with different account types and currencies.
 - RESTFul API for seamless integration with other systems.
+- Manage transactions, accounts balance and history
 ---
 
 ## Development
@@ -14,6 +15,14 @@
 - [Go 1.23.1+](https://golang.org/)
 - A PostgreSQL database (or other supported database via GORM)
 
+### Start
+```shell
+git clone github.com/sinameshkini/fingo
+cd fingo
+make tidy
+make test
+make run
+```
 ---
 
 ## License

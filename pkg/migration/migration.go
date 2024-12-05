@@ -1,48 +1,50 @@
 package migration
 
 import (
-	"github.com/sinameshkini/fingo/internal/models"
+	"github.com/sinameshkini/fingo/internal/repository/entities"
+	"github.com/sinameshkini/fingo/pkg/enums"
+	"github.com/sinameshkini/fingo/pkg/types"
 	"gorm.io/gorm"
 )
 
 var (
-	minAmount   models.Amount = 10000
-	maxAmount   models.Amount = 10000000
-	defaultCode               = models.CodeP{
-		FeeType:                 models.FeeTypePointer(models.FeeActual),
-		FeeValue:                models.AmountPointer(0),
-		MinAmountPerTransaction: models.AmountPointer(minAmount),
-		MaxAmountPerTransaction: models.AmountPointer(maxAmount),
-		MaxAmountPerDay:         models.AmountPointer(maxAmount * 3),
-		MaxCountPerDay:          models.IntPointer(3),
+	minAmount   types.Amount = 10000
+	maxAmount   types.Amount = 10000000
+	defaultCode              = entities.CodeP{
+		FeeType:                 entities.FeeTypePointer(entities.FeeActual),
+		FeeValue:                entities.AmountPointer(0),
+		MinAmountPerTransaction: entities.AmountPointer(minAmount),
+		MaxAmountPerTransaction: entities.AmountPointer(maxAmount),
+		MaxAmountPerDay:         entities.AmountPointer(maxAmount * 3),
+		MaxCountPerDay:          entities.IntPointer(3),
 	}
 
-	defaultCodeWithFee = models.CodeP{
-		FeeType:                 models.FeeTypePointer(models.FeeActual),
-		FeeValue:                models.AmountPointer(1000),
-		MinAmountPerTransaction: models.AmountPointer(minAmount),
-		MaxAmountPerTransaction: models.AmountPointer(maxAmount),
-		MaxAmountPerDay:         models.AmountPointer(maxAmount * 3),
-		MaxCountPerDay:          models.IntPointer(3),
+	defaultCodeWithFee = entities.CodeP{
+		FeeType:                 entities.FeeTypePointer(entities.FeeActual),
+		FeeValue:                entities.AmountPointer(1000),
+		MinAmountPerTransaction: entities.AmountPointer(minAmount),
+		MaxAmountPerTransaction: entities.AmountPointer(maxAmount),
+		MaxAmountPerDay:         entities.AmountPointer(maxAmount * 3),
+		MaxCountPerDay:          entities.IntPointer(3),
 	}
 )
 
 func Seed(db *gorm.DB) (err error) {
 
 	//	accountTypes
-	accountTypes := []*models.AccountType{
+	accountTypes := []*entities.AccountType{
 		//{
 		//	ID:          models.ACCOUNTTYPEGL,
 		//	Name:        "GL",
 		//	Description: "general ledger",
 		//},
 		{
-			ID:          models.ACCOUNTTYPEWALLET,
+			ID:          enums.ACCOUNTTYPEWALLET,
 			Name:        "wallet",
 			Description: "Wallet",
 		},
 		{
-			ID:          models.ACCOUNTTYPESHADOW,
+			ID:          enums.ACCOUNTTYPESHADOW,
 			Name:        "shadow",
 			Description: "Payment Gateway",
 		},
@@ -83,35 +85,35 @@ func Seed(db *gorm.DB) (err error) {
 	// account_type 20-39
 	//
 
-	policies := []*models.Policy{
+	policies := []*entities.Policy{
 		{
 			EntityType: "user_group",
 			EntityID:   "",
-			Settings: models.SettingsP{
-				Limits: &models.LimitsP{
-					MinBalance:       models.AmountPointer(0),
-					MaxBalance:       models.AmountPointer(maxAmount),
-					NumberOfAccounts: map[string]uint{models.ACCOUNTTYPEWALLET: 1},
+			Settings: entities.SettingsP{
+				Limits: &entities.LimitsP{
+					MinBalance:       entities.AmountPointer(0),
+					MaxBalance:       entities.AmountPointer(maxAmount),
+					NumberOfAccounts: map[string]uint{enums.ACCOUNTTYPEWALLET: 1},
 				},
-				DefaultAccountTypeID: models.StringPointer(models.ACCOUNTTYPEWALLET),
+				DefaultAccountTypeID: entities.StringPointer(enums.ACCOUNTTYPEWALLET),
 			},
 			Priority: 0,
 			IsEnable: true,
 		},
 		{
 			EntityType: "account_type",
-			EntityID:   models.ACCOUNTTYPEWALLET,
-			Settings: models.SettingsP{
-				Limits: &models.LimitsP{
-					MinBalance: models.AmountPointer(0),
-					MaxBalance: models.AmountPointer(maxAmount),
+			EntityID:   enums.ACCOUNTTYPEWALLET,
+			Settings: entities.SettingsP{
+				Limits: &entities.LimitsP{
+					MinBalance: entities.AmountPointer(0),
+					MaxBalance: entities.AmountPointer(maxAmount),
 				},
-				Codes: map[models.ProcessCode]models.CodeP{
-					models.CodeDepositCredit:  defaultCode,
-					models.CodePurchaseDebit:  defaultCode,
-					models.CodeTransferDebit:  defaultCodeWithFee,
-					models.CodeTransferCredit: defaultCode,
-					models.CodeWithdrawDebit:  defaultCodeWithFee,
+				Codes: map[enums.ProcessCode]entities.CodeP{
+					enums.CodeDepositCredit:  defaultCode,
+					enums.CodePurchaseDebit:  defaultCode,
+					enums.CodeTransferDebit:  defaultCodeWithFee,
+					enums.CodeTransferCredit: defaultCode,
+					enums.CodeWithdrawDebit:  defaultCodeWithFee,
 				},
 			},
 			Priority: 20,
@@ -119,15 +121,15 @@ func Seed(db *gorm.DB) (err error) {
 		},
 		{
 			EntityType: "account_type",
-			EntityID:   models.ACCOUNTTYPESHADOW,
-			Settings: models.SettingsP{
-				Limits: &models.LimitsP{
-					MinBalance:       models.AmountPointer(-10000000000),
-					MaxBalance:       models.AmountPointer(0),
-					NumberOfAccounts: map[string]uint{models.ACCOUNTTYPESHADOW: 1},
+			EntityID:   enums.ACCOUNTTYPESHADOW,
+			Settings: entities.SettingsP{
+				Limits: &entities.LimitsP{
+					MinBalance:       entities.AmountPointer(-10000000000),
+					MaxBalance:       entities.AmountPointer(0),
+					NumberOfAccounts: map[string]uint{enums.ACCOUNTTYPESHADOW: 1},
 				},
-				Codes: map[models.ProcessCode]models.CodeP{
-					models.CodeDepositDebit: defaultCode,
+				Codes: map[enums.ProcessCode]entities.CodeP{
+					enums.CodeDepositDebit: defaultCode,
 				},
 			},
 			Priority: 35,
@@ -135,15 +137,15 @@ func Seed(db *gorm.DB) (err error) {
 		},
 		{
 			EntityType: "account_type",
-			EntityID:   models.ACCOUNTTYPETERMINAL,
-			Settings: models.SettingsP{
-				Limits: &models.LimitsP{
-					MinBalance:       models.AmountPointer(0),
-					MaxBalance:       models.AmountPointer(maxAmount),
-					NumberOfAccounts: map[string]uint{models.ACCOUNTTYPETERMINAL: 1},
+			EntityID:   enums.ACCOUNTTYPETERMINAL,
+			Settings: entities.SettingsP{
+				Limits: &entities.LimitsP{
+					MinBalance:       entities.AmountPointer(0),
+					MaxBalance:       entities.AmountPointer(maxAmount),
+					NumberOfAccounts: map[string]uint{enums.ACCOUNTTYPETERMINAL: 1},
 				},
-				Codes: map[models.ProcessCode]models.CodeP{
-					models.CodePurchaseCredit: defaultCode,
+				Codes: map[enums.ProcessCode]entities.CodeP{
+					enums.CodePurchaseCredit: defaultCode,
 				},
 			},
 			Priority: 30,
@@ -151,15 +153,15 @@ func Seed(db *gorm.DB) (err error) {
 		},
 		{
 			EntityType: "account_type",
-			EntityID:   models.ACCOUNTTYPEEXTERNALACCOUNT,
-			Settings: models.SettingsP{
-				Limits: &models.LimitsP{
-					MinBalance:       models.AmountPointer(0),
-					MaxBalance:       models.AmountPointer(maxAmount),
-					NumberOfAccounts: map[string]uint{models.ACCOUNTTYPEEXTERNALACCOUNT: 1},
+			EntityID:   enums.ACCOUNTTYPEEXTERNALACCOUNT,
+			Settings: entities.SettingsP{
+				Limits: &entities.LimitsP{
+					MinBalance:       entities.AmountPointer(0),
+					MaxBalance:       entities.AmountPointer(maxAmount),
+					NumberOfAccounts: map[string]uint{enums.ACCOUNTTYPEEXTERNALACCOUNT: 1},
 				},
-				Codes: map[models.ProcessCode]models.CodeP{
-					models.CodeWithdrawCredit: defaultCode,
+				Codes: map[enums.ProcessCode]entities.CodeP{
+					enums.CodeWithdrawCredit: defaultCode,
 				},
 			},
 			Priority: 25,
@@ -167,15 +169,15 @@ func Seed(db *gorm.DB) (err error) {
 		},
 		{
 			EntityType: "account_type",
-			EntityID:   models.ACCOUNTTYPEFEE,
-			Settings: models.SettingsP{
-				Limits: &models.LimitsP{
-					MinBalance:       models.AmountPointer(0),
-					MaxBalance:       models.AmountPointer(maxAmount),
-					NumberOfAccounts: map[string]uint{models.ACCOUNTTYPEFEE: 1},
+			EntityID:   enums.ACCOUNTTYPEFEE,
+			Settings: entities.SettingsP{
+				Limits: &entities.LimitsP{
+					MinBalance:       entities.AmountPointer(0),
+					MaxBalance:       entities.AmountPointer(maxAmount),
+					NumberOfAccounts: map[string]uint{enums.ACCOUNTTYPEFEE: 1},
 				},
-				Codes: map[models.ProcessCode]models.CodeP{
-					models.CodeWithdrawCredit: defaultCode,
+				Codes: map[enums.ProcessCode]entities.CodeP{
+					enums.CodeWithdrawCredit: defaultCode,
 				},
 			},
 			Priority: 32,
@@ -184,15 +186,15 @@ func Seed(db *gorm.DB) (err error) {
 		{
 			EntityType: "account_type",
 			EntityID:   "9",
-			Settings: models.SettingsP{
-				Limits: &models.LimitsP{
-					MinBalance:       models.AmountPointer(0),
-					MaxBalance:       models.AmountPointer(maxAmount),
-					NumberOfAccounts: map[string]uint{models.ACCOUNTTYPEWALLET: 1},
+			Settings: entities.SettingsP{
+				Limits: &entities.LimitsP{
+					MinBalance:       entities.AmountPointer(0),
+					MaxBalance:       entities.AmountPointer(maxAmount),
+					NumberOfAccounts: map[string]uint{enums.ACCOUNTTYPEWALLET: 1},
 				},
-				Codes: map[models.ProcessCode]models.CodeP{
-					models.CodeDepositCredit: defaultCode,
-					models.CodePurchaseDebit: defaultCode,
+				Codes: map[enums.ProcessCode]entities.CodeP{
+					enums.CodeDepositCredit: defaultCode,
+					enums.CodePurchaseDebit: defaultCode,
 				},
 			},
 			Priority: 30,
@@ -207,7 +209,7 @@ func Seed(db *gorm.DB) (err error) {
 	}
 
 	//	currencies
-	currencies := []*models.Currency{
+	currencies := []*entities.Currency{
 		{
 			ID:        1,
 			Symbol:    "USD",
@@ -223,31 +225,30 @@ func Seed(db *gorm.DB) (err error) {
 	}
 
 	//	accounts
-	accounts := []*models.Account{
+	accounts := []*entities.Account{
 		//{
-		//	Model:         models.Model{ID: models.ID2},
+		//	Model:         models.Model{ID: models.SID2},
 		//	AccountTypeID: models.ACCOUNTTYPETERMINAL,
 		//	CurrencyID:    1,
 		//	Name:          "service provider terminal",
 		//	IsEnable:      true,
 		//},
 		//{
-		//	Model:         models.Model{ID: models.ID6},
+		//	Model:         models.Model{ID: models.SID6},
 		//	AccountTypeID: models.ACCOUNTTYPETERMINAL,
 		//	CurrencyID:    1,
 		//	Name:          "wallet fee terminal",
 		//	IsEnable:      false,
 		//},
 		{
-			Model:         models.Model{ID: models.ID3},
-			AccountTypeID: models.ACCOUNTTYPESHADOW,
+			AccountTypeID: enums.ACCOUNTTYPESHADOW,
 			CurrencyID:    1,
 			Name:          "payment gateway shadow",
 			IsEnable:      true,
 			UserID:        "admin",
 		},
 		//{
-		//	Model:         models.Model{ID: models.ID4},
+		//	Model:         models.Model{ID: models.SID4},
 		//	AccountTypeID: models.ACCOUNTTYPEFEE,
 		//	CurrencyID:    1,
 		//	Name:          "fee",

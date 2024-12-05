@@ -1,4 +1,4 @@
-package models
+package enums
 
 type TransactionType string
 
@@ -97,16 +97,6 @@ func (pc ProcessCode) TransactionType() TransactionType {
 
 	return Unknown
 }
-
-var (
-	ID1 ID = 1273444730903568384
-	ID2 ID = 1273444735114649600
-	ID3 ID = 1273444739325730816
-	ID4 ID = 1273444743536812032
-	ID5 ID = 1273444747747893248
-	ID6 ID = 1273444760381136896
-	ID7 ID = 1273444768803299328
-)
 
 const (
 	ACCOUNTTYPEGL              = "1"

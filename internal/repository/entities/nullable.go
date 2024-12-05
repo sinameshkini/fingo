@@ -1,6 +1,8 @@
-package models
+package entities
 
-func AmountPointer(amount Amount) *Amount {
+import "github.com/sinameshkini/fingo/pkg/types"
+
+func AmountPointer(amount types.Amount) *types.Amount {
 	return &amount
 }
 

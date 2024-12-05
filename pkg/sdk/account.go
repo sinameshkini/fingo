@@ -3,12 +3,13 @@ package sdk
 import (
 	"errors"
 	"fmt"
-	"github.com/sinameshkini/fingo/internal/models"
+	"github.com/sinameshkini/fingo/internal/repository/entities"
+	"github.com/sinameshkini/fingo/pkg/endpoint"
 	"github.com/sinameshkini/microkit/pkg/utils"
 )
 
-func (c *Client) GetAccount(id string) (resp *models.AccountResponse, err error) {
-	apiResp := &models.Response{}
+func (c *Client) GetAccount(id string) (resp *endpoint.AccountResponse, err error) {
+	apiResp := &entities.Response{}
 
 	r, err := c.rc.R().
 		SetResult(apiResp).
@@ -30,8 +31,8 @@ func (c *Client) GetAccount(id string) (resp *models.AccountResponse, err error)
 	return
 }
 
-func (c *Client) GetAccounts(userID string) (resp []*models.AccountResponse, err error) {
-	apiResp := &models.Response{}
+func (c *Client) GetAccounts(userID string) (resp []*endpoint.AccountResponse, err error) {
+	apiResp := &entities.Response{}
 
 	r, err := c.rc.R().
 		SetResult(apiResp).
@@ -53,8 +54,8 @@ func (c *Client) GetAccounts(userID string) (resp []*models.AccountResponse, err
 	return
 }
 
-func (c *Client) CreateAccount(req models.CreateAccount) (resp *models.AccountResponse, err error) {
-	apiResp := &models.Response{}
+func (c *Client) CreateAccount(req endpoint.CreateAccount) (resp *endpoint.AccountResponse, err error) {
+	apiResp := &entities.Response{}
 
 	r, err := c.rc.R().
 		SetBody(&req).
@@ -77,8 +78,8 @@ func (c *Client) CreateAccount(req models.CreateAccount) (resp *models.AccountRe
 	return
 }
 
-func (c *Client) GetPolicies(req models.GetSettingsRequest) (resp *models.Settings, err error) {
-	apiResp := &models.Response{}
+func (c *Client) GetPolicies(req entities.GetSettingsRequest) (resp *entities.Settings, err error) {
+	apiResp := &entities.Response{}
 
 	r, err := c.rc.R().
 		SetResult(apiResp).
@@ -100,8 +101,8 @@ func (c *Client) GetPolicies(req models.GetSettingsRequest) (resp *models.Settin
 	return
 }
 
-func (c *Client) GetAccountTypes() (resp []*models.AccountType, err error) {
-	apiResp := &models.Response{}
+func (c *Client) GetAccountTypes() (resp []*entities.AccountType, err error) {
+	apiResp := &entities.Response{}
 
 	r, err := c.rc.R().
 		SetResult(apiResp).
@@ -123,8 +124,8 @@ func (c *Client) GetAccountTypes() (resp []*models.AccountType, err error) {
 	return
 }
 
-func (c *Client) GetCurrencies() (resp []*models.Currency, err error) {
-	apiResp := &models.Response{}
+func (c *Client) GetCurrencies() (resp []*entities.Currency, err error) {
+	apiResp := &entities.Response{}
 
 	r, err := c.rc.R().
 		SetResult(apiResp).

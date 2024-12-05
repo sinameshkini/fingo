@@ -1,15 +1,18 @@
-package models
+package entities
 
 import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/sinameshkini/fingo/pkg/enums"
+	"github.com/sinameshkini/fingo/pkg/types"
+	"github.com/sinameshkini/microkit/models"
 	"gorm.io/gorm"
 )
 
 type Policy struct {
-	Model
+	models.ModelSID
 	EntityType string
 	EntityID   string
 	Settings   SettingsP `gorm:"type:jsonb;default:null"`
@@ -18,28 +21,28 @@ type Policy struct {
 }
 
 func (m *Policy) BeforeCreate(tx *gorm.DB) error {
-	m.ID = Next()
+	m.ID = models.Next()
 	return nil
 }
 
 type SettingsP struct {
 	Limits               *LimitsP
-	Codes                map[ProcessCode]CodeP
+	Codes                map[enums.ProcessCode]CodeP
 	DefaultAccountTypeID *string
 }
 
 type LimitsP struct {
-	MinBalance       *Amount
-	MaxBalance       *Amount
+	MinBalance       *types.Amount
+	MaxBalance       *types.Amount
 	NumberOfAccounts map[string]uint
 }
 
 type CodeP struct {
 	FeeType                 *FeeType
-	FeeValue                *Amount
-	MinAmountPerTransaction *Amount
-	MaxAmountPerTransaction *Amount
-	MaxAmountPerDay         *Amount
+	FeeValue                *types.Amount
+	MinAmountPerTransaction *types.Amount
+	MaxAmountPerTransaction *types.Amount
+	MaxAmountPerDay         *types.Amount
 	MaxCountPerDay          *int
 }
 
@@ -79,26 +82,26 @@ type GetSettingsRequest struct {
 
 type Settings struct {
 	Limits               Limits
-	Codes                map[ProcessCode]Code
+	Codes                map[enums.ProcessCode]Code
 	DefaultAccountTypeID string
 }
 
 type Limits struct {
-	MinBalance       Amount
-	MaxBalance       Amount
+	MinBalance       types.Amount
+	MaxBalance       types.Amount
 	NumberOfAccounts map[string]uint
 }
 
 type Code struct {
 	FeeType                 FeeType
-	FeeValue                Amount
-	MinAmountPerTransaction Amount
-	MaxAmountPerTransaction Amount
-	MaxAmountPerDay         Amount
+	FeeValue                types.Amount
+	MinAmountPerTransaction types.Amount
+	MaxAmountPerTransaction types.Amount
+	MaxAmountPerDay         types.Amount
 	MaxCountPerDay          int
 }
 
-func (c *Code) CalculateFeeAmount(raw Amount) (fee Amount) {
+func (c *Code) CalculateFeeAmount(raw types.Amount) (fee types.Amount) {
 	switch c.FeeType {
 	case FeeActual:
 		fee = c.FeeValue

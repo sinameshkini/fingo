@@ -1,7 +1,8 @@
-package models
+package entities
 
 import (
 	"encoding/json"
+	"github.com/sinameshkini/fingo/pkg/endpoint"
 )
 
 type Currency struct {
@@ -10,6 +11,16 @@ type Currency struct {
 	Icon      string
 	IsDefault bool
 	IsEnable  bool
+}
+
+func (m *Currency) ToResponse() *endpoint.Currency {
+	return &endpoint.Currency{
+		ID:        m.ID,
+		Symbol:    m.Symbol,
+		Icon:      m.Icon,
+		IsDefault: m.IsDefault,
+		IsEnable:  m.IsEnable,
+	}
 }
 
 type CurrencyObject struct {

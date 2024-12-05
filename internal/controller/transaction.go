@@ -2,11 +2,11 @@ package controller
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/sinameshkini/fingo/internal/models"
+	"github.com/sinameshkini/fingo/pkg/endpoint"
 )
 
 func (h *ctrl) transfer(c echo.Context) error {
-	req := models.TransferRequest{}
+	req := endpoint.TransferRequest{}
 	if err := c.Bind(&req); err != nil {
 		return responseError(c, err)
 	}
@@ -20,7 +20,7 @@ func (h *ctrl) transfer(c echo.Context) error {
 }
 
 func (h *ctrl) reverse(c echo.Context) error {
-	req := models.ReverseRequest{}
+	req := endpoint.ReverseRequest{}
 	if err := c.Bind(&req); err != nil {
 		return responseError(c, err)
 	}

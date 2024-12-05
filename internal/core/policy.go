@@ -2,17 +2,18 @@ package core
 
 import (
 	"context"
-	"github.com/sinameshkini/fingo/internal/models"
+	"github.com/sinameshkini/fingo/internal/repository/entities"
+	"github.com/sinameshkini/fingo/pkg/enums"
 )
 
-func (c *Core) GetSettings(ctx context.Context, req models.GetSettingsRequest) (settings *models.Settings, err error) {
+func (c *Core) GetSettings(ctx context.Context, req entities.GetSettingsRequest) (settings *entities.Settings, err error) {
 	var (
-		policies []*models.Policy
-		sp       = models.SettingsP{
-			Limits: &models.LimitsP{
+		policies []*entities.Policy
+		sp       = entities.SettingsP{
+			Limits: &entities.LimitsP{
 				NumberOfAccounts: make(map[string]uint),
 			},
-			Codes: make(map[models.ProcessCode]models.CodeP),
+			Codes: make(map[enums.ProcessCode]entities.CodeP),
 		}
 	)
 
@@ -44,8 +45,8 @@ func (c *Core) GetSettings(ctx context.Context, req models.GetSettingsRequest) (
 	return
 }
 
-func validate(sp models.SettingsP) (s *models.Settings, err error) {
-	err = models.ErrPermissionDenied
+func validate(sp entities.SettingsP) (s *entities.Settings, err error) {
+	err = entities.ErrPermissionDenied
 	if sp.Limits == nil {
 		return
 	}
@@ -58,13 +59,13 @@ func validate(sp models.SettingsP) (s *models.Settings, err error) {
 		return
 	}
 
-	s = &models.Settings{
-		Limits: models.Limits{
+	s = &entities.Settings{
+		Limits: entities.Limits{
 			MinBalance:       *sp.Limits.MinBalance,
 			MaxBalance:       *sp.Limits.MaxBalance,
 			NumberOfAccounts: make(map[string]uint),
 		},
-		Codes: make(map[models.ProcessCode]models.Code),
+		Codes: make(map[enums.ProcessCode]entities.Code),
 	}
 
 	for pc, c := range sp.Codes {
@@ -92,7 +93,7 @@ func validate(sp models.SettingsP) (s *models.Settings, err error) {
 			return
 		}
 
-		s.Codes[pc] = models.Code{
+		s.Codes[pc] = entities.Code{
 			FeeType:                 *c.FeeType,
 			FeeValue:                *c.FeeValue,
 			MinAmountPerTransaction: *c.MinAmountPerTransaction,
@@ -115,7 +116,7 @@ func validate(sp models.SettingsP) (s *models.Settings, err error) {
 	return
 }
 
-func merge(sp, in models.SettingsP) models.SettingsP {
+func merge(sp, in entities.SettingsP) entities.SettingsP {
 	if in.Limits != nil {
 		if in.Limits.MinBalance != nil {
 			sp.Limits.MinBalance = in.Limits.MinBalance

@@ -2,12 +2,13 @@ package sdk
 
 import (
 	"errors"
-	"github.com/sinameshkini/fingo/internal/models"
+	"github.com/sinameshkini/fingo/internal/repository/entities"
+	"github.com/sinameshkini/fingo/pkg/endpoint"
 	"github.com/sinameshkini/microkit/pkg/utils"
 )
 
-func (c *Client) Transfer(req models.TransferRequest) (resp *models.TransferResponse, err error) {
-	apiResp := &models.Response{}
+func (c *Client) Transfer(req endpoint.TransferRequest) (resp *endpoint.TransferResponse, err error) {
+	apiResp := &entities.Response{}
 
 	r, err := c.rc.R().
 		SetBody(&req).
@@ -30,8 +31,8 @@ func (c *Client) Transfer(req models.TransferRequest) (resp *models.TransferResp
 	return
 }
 
-func (c *Client) Reverse(req models.ReverseRequest) (resp *models.TransferResponse, err error) {
-	apiResp := &models.Response{}
+func (c *Client) Reverse(req endpoint.ReverseRequest) (resp *endpoint.TransferResponse, err error) {
+	apiResp := &entities.Response{}
 
 	r, err := c.rc.R().
 		SetBody(&req).

@@ -1,6 +1,11 @@
-package models
+package entities
 
-import "gorm.io/gorm"
+import (
+	"github.com/sinameshkini/fingo/pkg/endpoint"
+	"github.com/sinameshkini/fingo/pkg/types"
+	"github.com/sinameshkini/microkit/models"
+	"gorm.io/gorm"
+)
 
 type AccountType struct {
 	ID          string `json:"id" gorm:"primaryKey"`
@@ -8,8 +13,16 @@ type AccountType struct {
 	Description string `json:"description"`
 }
 
+func (m *AccountType) ToResponse() *endpoint.AccountType {
+	return &endpoint.AccountType{
+		ID:          m.ID,
+		Name:        m.Name,
+		Description: m.Description,
+	}
+}
+
 type Account struct {
-	Model
+	models.ModelSID
 	UserID        string
 	AccountTypeID string
 	AccountType   *AccountType
@@ -35,35 +48,16 @@ func (m *Account) GetSettings() (*Settings, error) {
 }
 
 func (m *Account) BeforeCreate(_ *gorm.DB) error {
-	m.ID = Next()
+	m.ID = models.Next()
 	return nil
 }
 
-type CreateAccount struct {
-	UserID        string `json:"user_id"`
-	AccountTypeID string `json:"account_type_id"`
-	CurrencyID    uint   `json:"currency_id"`
-	Name          string `json:"name"`
-}
-
-type AccountResponse struct {
-	ID          string       `json:"id"`
-	UserID      string       `json:"user_id"`
-	AccountType *AccountType `json:"account_type"`
-	Currency    *Currency    `json:"currency"`
-	Name        string       `json:"name"`
-	Priority    int          `json:"priority"`
-	IsDefault   bool         `json:"is_default"`
-	IsEnable    bool         `json:"is_enable"`
-	Balance     Amount       `json:"balance"`
-}
-
-func (a *Account) ToResponse(balance Amount) *AccountResponse {
-	return &AccountResponse{
+func (a *Account) ToResponse(balance types.Amount) *endpoint.AccountResponse {
+	return &endpoint.AccountResponse{
 		ID:          a.ID.String(),
 		UserID:      a.UserID,
-		AccountType: a.AccountType,
-		Currency:    a.Currency,
+		AccountType: a.AccountType.ToResponse(),
+		Currency:    a.Currency.ToResponse(),
 		Name:        a.Name,
 		Priority:    a.Priority,
 		IsDefault:   a.IsDefault,

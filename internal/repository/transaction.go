@@ -3,13 +3,16 @@ package repository
 import (
 	"context"
 	"fmt"
-	"github.com/sinameshkini/fingo/internal/models"
+	"github.com/sinameshkini/fingo/internal/repository/entities"
+	"github.com/sinameshkini/fingo/pkg/enums"
+	"github.com/sinameshkini/fingo/pkg/types"
+	"github.com/sinameshkini/microkit/models"
 	"gorm.io/gorm"
 )
 
-func (r *repo) GetBalance(ctx context.Context, accountID models.ID) (resp models.Amount, err error) {
+func (r *repo) GetBalance(ctx context.Context, accountID models.SID) (resp types.Amount, err error) {
 	if err = r.db.WithContext(ctx).
-		Model(&models.Document{}).
+		Model(&entities.Document{}).
 		Where("account_id = ?", accountID).
 		Select("COALESCE(sum(amount), 0) as balance").
 		Scan(&resp).Error; err != nil {
@@ -27,10 +30,10 @@ func (r *repo) CommitTransaction(tx *gorm.DB) (err error) {
 	return tx.Commit().Error
 }
 
-func (r *repo) Initial(tx *gorm.DB, userID, orderID string, txnType models.TransactionType, amount models.Amount,
-	description string) (txn *models.Transaction, err error) {
+func (r *repo) Initial(tx *gorm.DB, userID, orderID string, txnType enums.TransactionType, amount types.Amount,
+	description string) (txn *entities.Transaction, err error) {
 
-	txn = &models.Transaction{
+	txn = &entities.Transaction{
 		UserID:      userID,
 		OrderID:     orderID,
 		Type:        txnType,
@@ -45,22 +48,22 @@ func (r *repo) Initial(tx *gorm.DB, userID, orderID string, txnType models.Trans
 	return
 }
 
-func (r *repo) Transfer(tx *gorm.DB, amount models.Amount, txnID, debID, credID models.ID, comment string) (err error) {
+func (r *repo) Transfer(tx *gorm.DB, amount types.Amount, txnID, debID, credID models.SID, comment string) (err error) {
 	var (
-		debBalance  models.Amount
-		credBalance models.Amount
+		debBalance  types.Amount
+		credBalance types.Amount
 	)
-	if err = tx.Model(&models.Document{}).
+	if err = tx.Model(&entities.Document{}).
 		Where("account_id = ?", debID).
 		Select("COALESCE(sum(amount), 0)").Scan(&debBalance).Error; err != nil {
 		return
 	}
 
-	debitDocument := &models.Document{
+	debitDocument := &entities.Document{
 		TransactionID:  txnID,
 		AccountID:      debID,
 		AccountPartyID: credID,
-		Type:           models.Debit,
+		Type:           enums.Debit,
 		Amount:         amount * -1,
 		Comment:        comment,
 		Balance:        debBalance - amount,
@@ -70,17 +73,17 @@ func (r *repo) Transfer(tx *gorm.DB, amount models.Amount, txnID, debID, credID 
 		return
 	}
 
-	if err = tx.Model(&models.Document{}).
+	if err = tx.Model(&entities.Document{}).
 		Where("account_id = ?", credID).
 		Select("COALESCE(sum(amount), 0)").Scan(&credBalance).Error; err != nil {
 		return
 	}
 
-	creditDocument := &models.Document{
+	creditDocument := &entities.Document{
 		TransactionID:  txnID,
 		AccountID:      credID,
 		AccountPartyID: debID,
-		Type:           models.Credit,
+		Type:           enums.Credit,
 		Amount:         amount,
 		Comment:        comment,
 		Balance:        credBalance + amount,
@@ -93,21 +96,21 @@ func (r *repo) Transfer(tx *gorm.DB, amount models.Amount, txnID, debID, credID 
 	return
 }
 
-func (r *repo) Reverse(tx *gorm.DB, transaction *models.Transaction, reverseTxnID models.ID) (err error) {
+func (r *repo) Reverse(tx *gorm.DB, transaction *entities.Transaction, reverseTxnID models.SID) (err error) {
 	for i := len(transaction.Documents) - 1; i >= 0; i-- {
 		var (
-			balance models.Amount
+			balance types.Amount
 			d       = transaction.Documents[i]
 		)
 
-		if err = tx.Model(&models.Document{}).
+		if err = tx.Model(&entities.Document{}).
 			Where("account_id = ?", d.AccountID).
 			Select("COALESCE(sum(amount), 0)").Scan(&balance).
 			Error; err != nil {
 			return err
 		}
 
-		reverseDoc := &models.Document{
+		reverseDoc := &entities.Document{
 			TransactionID:  reverseTxnID,
 			AccountID:      d.AccountID,
 			AccountPartyID: d.AccountPartyID,
@@ -125,7 +128,7 @@ func (r *repo) Reverse(tx *gorm.DB, transaction *models.Transaction, reverseTxnI
 	return
 }
 
-func (r *repo) GetTransaction(ctx context.Context, txnID models.ID) (resp *models.Transaction, err error) {
+func (r *repo) GetTransaction(ctx context.Context, txnID models.SID) (resp *entities.Transaction, err error) {
 	if err = r.db.WithContext(ctx).
 		Preload("Documents.Account").
 		First(&resp, txnID).Error; err != nil {
@@ -135,7 +138,7 @@ func (r *repo) GetTransaction(ctx context.Context, txnID models.ID) (resp *model
 	return
 }
 
-func (r *repo) GetHistory(ctx context.Context, accountID models.ID) (resp []*models.Document, err error) {
+func (r *repo) GetHistory(ctx context.Context, accountID models.SID) (resp []*entities.Document, err error) {
 	if err = r.db.WithContext(ctx).
 		//Joins("join documents on transactions.id = documents.transaction_id").
 		//Where("documents.account_id = ?", accountID).

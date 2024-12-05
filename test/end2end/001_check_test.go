@@ -1,7 +1,7 @@
 package end2end
 
 import (
-	"github.com/sinameshkini/fingo/internal/models"
+	"github.com/sinameshkini/fingo/internal/repository/entities"
 	"github.com/sinameshkini/fingo/test"
 	"github.com/sinameshkini/microkit/pkg/utils"
 	"testing"
@@ -11,13 +11,13 @@ import (
 // Scenario:	Check all required system settings
 
 func Test_TS001_Check(t *testing.T) {
-	cli, err := test.Setup()
+	cli, _, err := test.Setup()
 	if err != nil {
 		t.Error(err.Error())
 		t.FailNow()
 	}
 
-	settings, err := cli.GetPolicies(models.GetSettingsRequest{})
+	settings, err := cli.GetPolicies(entities.GetSettingsRequest{})
 	if err != nil {
 		t.Error(err.Error())
 		t.FailNow()

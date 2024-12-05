@@ -1,7 +1,8 @@
 package end2end
 
 import (
-	"github.com/sinameshkini/fingo/internal/models"
+	"github.com/sinameshkini/fingo/pkg/endpoint"
+	"github.com/sinameshkini/fingo/pkg/enums"
 	"github.com/sinameshkini/fingo/test"
 	"github.com/sinameshkini/microkit/pkg/utils"
 	"testing"
@@ -11,27 +12,27 @@ import (
 // Scenario:	Reverse transaction
 
 func Test_TS004_Reverse(t *testing.T) {
-	cli, err := test.Setup()
+	cli, _, err := test.Setup()
 	if err != nil {
 		t.Error(err.Error())
 		t.FailNow()
 	}
 
-	account1, err := createAccount(cli, "user1", models.ACCOUNTTYPEWALLET, "user1")
+	account1, err := CreateAccount(cli, "user1", enums.ACCOUNTTYPEWALLET, "user1")
 	if err != nil {
 		t.Error(err.Error())
 		t.FailNow()
 	}
 
-	shadowAccount, err := getAccount(cli, "admin", models.ACCOUNTTYPESHADOW)
+	shadowAccount, err := GetAccount(cli, "admin", enums.ACCOUNTTYPESHADOW)
 	if err != nil {
 		t.Error(err.Error())
 		t.FailNow()
 	}
 
-	depositTxn, err := cli.Transfer(models.TransferRequest{
+	depositTxn, err := cli.Transfer(endpoint.TransferRequest{
 		UserID:          "admin",
-		Type:            models.Deposit,
+		Type:            enums.Deposit,
 		OrderID:         "1234",
 		DebitAccountID:  shadowAccount.ID,
 		CreditAccountID: account1.ID,
@@ -46,7 +47,7 @@ func Test_TS004_Reverse(t *testing.T) {
 
 	utils.PrintJson(depositTxn)
 
-	reverseTxn, err := cli.Reverse(models.ReverseRequest{
+	reverseTxn, err := cli.Reverse(endpoint.ReverseRequest{
 		UserID:        "admin",
 		TransactionID: depositTxn.TransactionID,
 	})

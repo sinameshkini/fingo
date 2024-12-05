@@ -2,7 +2,10 @@ package repository
 
 import (
 	"context"
-	"github.com/sinameshkini/fingo/internal/models"
+	"github.com/sinameshkini/fingo/internal/repository/entities"
+	"github.com/sinameshkini/fingo/pkg/enums"
+	"github.com/sinameshkini/fingo/pkg/types"
+	"github.com/sinameshkini/microkit/models"
 	"gorm.io/gorm"
 	"sync"
 )
@@ -27,23 +30,23 @@ func New(db *gorm.DB) Repository {
 }
 
 type Repository interface {
-	CreateAccount(ctx context.Context, account models.Account) (*models.Account, error)
-	GetAccount(ctx context.Context, id models.ID) (*models.Account, error)
-	GetAccounts(ctx context.Context, userID string) ([]*models.Account, error)
-	GetBalance(ctx context.Context, accountID models.ID) (models.Amount, error)
+	CreateAccount(ctx context.Context, account entities.Account) (*entities.Account, error)
+	GetAccount(ctx context.Context, id models.SID) (*entities.Account, error)
+	GetAccounts(ctx context.Context, userID string) ([]*entities.Account, error)
+	GetBalance(ctx context.Context, accountID models.SID) (types.Amount, error)
 
 	NewTransaction(ctx context.Context) *gorm.DB
 	CommitTransaction(tx *gorm.DB) error
-	Initial(*gorm.DB, string, string, models.TransactionType, models.Amount, string) (*models.Transaction, error)
-	Transfer(tx *gorm.DB, amount models.Amount, txnID, debID, credID models.ID, comment string) error
-	Reverse(tx *gorm.DB, transaction *models.Transaction, reverseTxnID models.ID) error
+	Initial(*gorm.DB, string, string, enums.TransactionType, types.Amount, string) (*entities.Transaction, error)
+	Transfer(tx *gorm.DB, amount types.Amount, txnID, debID, credID models.SID, comment string) error
+	Reverse(tx *gorm.DB, transaction *entities.Transaction, reverseTxnID models.SID) error
 
-	GetTransaction(ctx context.Context, txnID models.ID) (*models.Transaction, error)
-	GetHistory(ctx context.Context, accountID models.ID) ([]*models.Document, error)
+	GetTransaction(ctx context.Context, txnID models.SID) (*entities.Transaction, error)
+	GetHistory(ctx context.Context, accountID models.SID) ([]*entities.Document, error)
 
-	GetPolicies(ctx context.Context, userID, accountID, accountType string) ([]*models.Policy, error)
-	GetAccountTypes(ctx context.Context) ([]*models.AccountType, error)
-	GetAccountType(ctx context.Context, id string) (*models.AccountType, error)
-	GetCurrencies(ctx context.Context) ([]*models.Currency, error)
-	GetCurrency(ctx context.Context, id uint) (*models.Currency, error)
+	GetPolicies(ctx context.Context, userID, accountID, accountType string) ([]*entities.Policy, error)
+	GetAccountTypes(ctx context.Context) ([]*entities.AccountType, error)
+	GetAccountType(ctx context.Context, id string) (*entities.AccountType, error)
+	GetCurrencies(ctx context.Context) ([]*entities.Currency, error)
+	GetCurrency(ctx context.Context, id uint) (*entities.Currency, error)
 }

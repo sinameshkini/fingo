@@ -2,7 +2,8 @@ package controller
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/sinameshkini/fingo/internal/models"
+	"github.com/sinameshkini/fingo/pkg/endpoint"
+	"github.com/sinameshkini/microkit/models"
 )
 
 func (h *ctrl) accountTypes(c echo.Context) error {
@@ -24,7 +25,7 @@ func (h *ctrl) currencies(c echo.Context) error {
 }
 
 func (h *ctrl) newAccount(c echo.Context) error {
-	req := models.CreateAccount{}
+	req := endpoint.CreateAccount{}
 	if err := c.Bind(&req); err != nil {
 		return responseError(c, err)
 	}

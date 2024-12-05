@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/sinameshkini/fingo/internal/config"
 	"github.com/sinameshkini/fingo/internal/core"
-	"github.com/sinameshkini/fingo/internal/models"
+	"github.com/sinameshkini/fingo/internal/repository/entities"
 	"net/http"
 )
 
@@ -39,7 +39,7 @@ func Init(conf config.Config, c *core.Core) error {
 }
 
 func response(c echo.Context, payload any) error {
-	return c.JSON(http.StatusOK, models.Response{
+	return c.JSON(http.StatusOK, entities.Response{
 		Code:    0,
 		Message: "success",
 		Data:    payload,
@@ -47,7 +47,7 @@ func response(c echo.Context, payload any) error {
 }
 
 func responseError(c echo.Context, err error) error {
-	return c.JSON(http.StatusInternalServerError, models.Response{
+	return c.JSON(http.StatusInternalServerError, entities.Response{
 		Code:    1,
 		Message: err.Error(),
 		Data:    nil,

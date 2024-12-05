@@ -5,18 +5,22 @@ import (
 	"fmt"
 	"github.com/bsm/redislock"
 	"github.com/labstack/gommon/log"
-	"github.com/sinameshkini/fingo/internal/models"
+	"github.com/sinameshkini/fingo/internal/repository/entities"
+	"github.com/sinameshkini/fingo/pkg/endpoint"
+	"github.com/sinameshkini/fingo/pkg/enums"
+	"github.com/sinameshkini/fingo/pkg/types"
+	"github.com/sinameshkini/microkit/models"
 	"time"
 )
 
 // Transfer is an internal API for other modules to do any transaction
-func (c *Core) Transfer(ctx context.Context, req models.TransferRequest) (resp *models.TransferResponse, err error) {
+func (c *Core) Transfer(ctx context.Context, req endpoint.TransferRequest) (resp *endpoint.TransferResponse, err error) {
 	var (
 		l *redislock.Lock
 	)
 
 	if req.RawAmount+req.FeeAmount != req.TotalAmount {
-		return nil, models.ErrInvalidRequest
+		return nil, entities.ErrInvalidRequest
 	}
 
 	if !req.SkipLock {
@@ -36,11 +40,11 @@ func (c *Core) Transfer(ctx context.Context, req models.TransferRequest) (resp *
 		}
 	}()
 
-	txn := &models.Transaction{
+	txn := &entities.Transaction{
 		UserID:      req.UserID,
 		OrderID:     req.OrderID,
 		Type:        req.Type,
-		Amount:      req.TotalAmount,
+		Amount:      types.Amount(req.TotalAmount),
 		Description: req.Description,
 	}
 
@@ -52,7 +56,7 @@ func (c *Core) Transfer(ctx context.Context, req models.TransferRequest) (resp *
 	// fee transaction
 	if req.FeeAmount != 0 {
 		if err = c.repo.Transfer(tx,
-			req.FeeAmount,
+			types.Amount(req.FeeAmount),
 			txn.ID,
 			models.ParseIDf(req.DebitAccountID),
 			models.ParseIDf(req.FeeAccountID),
@@ -65,7 +69,7 @@ func (c *Core) Transfer(ctx context.Context, req models.TransferRequest) (resp *
 
 	// do transfer
 	if err = c.repo.Transfer(tx,
-		req.RawAmount,
+		types.Amount(req.RawAmount),
 		txn.ID,
 		models.ParseIDf(req.DebitAccountID),
 		models.ParseIDf(req.CreditAccountID),
@@ -89,7 +93,7 @@ func (c *Core) Transfer(ctx context.Context, req models.TransferRequest) (resp *
 	return c.GetTransaction(ctx, req.UserID, txn.ID)
 }
 
-func (c *Core) GetTransaction(ctx context.Context, userID string, txnID models.ID) (resp *models.TransferResponse, err error) {
+func (c *Core) GetTransaction(ctx context.Context, userID string, txnID models.SID) (resp *endpoint.TransferResponse, err error) {
 	txn, err := c.repo.GetTransaction(ctx, txnID)
 	if err != nil {
 		return
@@ -97,15 +101,15 @@ func (c *Core) GetTransaction(ctx context.Context, userID string, txnID models.I
 
 	resp = txn.ToResponse(userID)
 	if resp == nil {
-		return nil, models.ErrNotFound
+		return nil, entities.ErrNotFound
 	}
 
 	return
 }
 
-func (c *Core) Reverse(ctx context.Context, req models.ReverseRequest) (resp *models.TransferResponse, err error) {
+func (c *Core) Reverse(ctx context.Context, req endpoint.ReverseRequest) (resp *endpoint.TransferResponse, err error) {
 	var (
-		transaction *models.Transaction
+		transaction *entities.Transaction
 	)
 
 	// get txn by ID
@@ -114,7 +118,7 @@ func (c *Core) Reverse(ctx context.Context, req models.ReverseRequest) (resp *mo
 	}
 
 	if req.UserID != transaction.UserID {
-		return nil, models.ErrPermissionDenied
+		return nil, entities.ErrPermissionDenied
 	}
 
 	// do reverse
@@ -126,7 +130,7 @@ func (c *Core) Reverse(ctx context.Context, req models.ReverseRequest) (resp *mo
 		}
 	}()
 
-	reverseTxn, err := c.repo.Initial(tx, req.UserID, transaction.OrderID, models.Reverse, transaction.Amount, models.Reverse.Label())
+	reverseTxn, err := c.repo.Initial(tx, req.UserID, transaction.OrderID, enums.Reverse, transaction.Amount, enums.Reverse.Label())
 	if err != nil {
 		tx.Rollback()
 		return
