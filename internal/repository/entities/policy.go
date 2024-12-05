@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sinameshkini/fingo/pkg/enums"
-	"github.com/sinameshkini/fingo/pkg/types"
 	"github.com/sinameshkini/microkit/models"
 	"gorm.io/gorm"
 )
@@ -32,17 +31,17 @@ type SettingsP struct {
 }
 
 type LimitsP struct {
-	MinBalance       *types.Amount
-	MaxBalance       *types.Amount
+	MinBalance       *models.Amount
+	MaxBalance       *models.Amount
 	NumberOfAccounts map[string]uint
 }
 
 type CodeP struct {
 	FeeType                 *FeeType
-	FeeValue                *types.Amount
-	MinAmountPerTransaction *types.Amount
-	MaxAmountPerTransaction *types.Amount
-	MaxAmountPerDay         *types.Amount
+	FeeValue                *models.Amount
+	MinAmountPerTransaction *models.Amount
+	MaxAmountPerTransaction *models.Amount
+	MaxAmountPerDay         *models.Amount
 	MaxCountPerDay          *int
 }
 
@@ -87,21 +86,21 @@ type Settings struct {
 }
 
 type Limits struct {
-	MinBalance       types.Amount
-	MaxBalance       types.Amount
+	MinBalance       models.Amount
+	MaxBalance       models.Amount
 	NumberOfAccounts map[string]uint
 }
 
 type Code struct {
 	FeeType                 FeeType
-	FeeValue                types.Amount
-	MinAmountPerTransaction types.Amount
-	MaxAmountPerTransaction types.Amount
-	MaxAmountPerDay         types.Amount
+	FeeValue                models.Amount
+	MinAmountPerTransaction models.Amount
+	MaxAmountPerTransaction models.Amount
+	MaxAmountPerDay         models.Amount
 	MaxCountPerDay          int
 }
 
-func (c *Code) CalculateFeeAmount(raw types.Amount) (fee types.Amount) {
+func (c *Code) CalculateFeeAmount(raw models.Amount) (fee models.Amount) {
 	switch c.FeeType {
 	case FeeActual:
 		fee = c.FeeValue

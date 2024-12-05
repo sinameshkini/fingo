@@ -2,7 +2,7 @@ package endpoint
 
 import (
 	"github.com/sinameshkini/fingo/pkg/enums"
-	"github.com/sinameshkini/fingo/pkg/types"
+	"github.com/sinameshkini/microkit/models"
 	"time"
 )
 
@@ -14,9 +14,9 @@ type TransferRequest struct {
 	DebitAccountID  string                `json:"debit_account_id"`
 	CreditAccountID string                `json:"credit_account_id"`
 	FeeAccountID    string                `json:"fee_account_id"`
-	RawAmount       types.Amount          `json:"raw_amount"`
-	FeeAmount       types.Amount          `json:"fee_amount"`
-	TotalAmount     types.Amount          `json:"total_amount"`
+	RawAmount       models.Amount         `json:"raw_amount"`
+	FeeAmount       models.Amount         `json:"fee_amount"`
+	TotalAmount     models.Amount         `json:"total_amount"`
 	Description     string                `json:"description"`
 	FeeDescription  string                `json:"fee_description"`
 }
@@ -29,8 +29,8 @@ type TransferResponse struct {
 	DocumentType    enums.DocumentType    `json:"document_type"`
 	Description     string                `json:"description"`
 	Comment         string                `json:"comment"`
-	Amount          types.Amount          `json:"amount"`
-	Balance         types.Amount          `json:"balance"`
+	Amount          models.Amount         `json:"amount"`
+	Balance         models.Amount         `json:"balance"`
 }
 
 type ReverseRequest struct {

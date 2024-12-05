@@ -2,7 +2,6 @@ package entities
 
 import (
 	"github.com/sinameshkini/fingo/pkg/enums"
-	"github.com/sinameshkini/fingo/pkg/types"
 	"github.com/sinameshkini/microkit/models"
 	"gorm.io/gorm"
 )
@@ -16,8 +15,8 @@ type Document struct {
 	AccountPartyID models.SID
 	Type           enums.DocumentType
 	Comment        string
-	Amount         types.Amount
-	Balance        types.Amount
+	Amount         models.Amount
+	Balance        models.Amount
 }
 
 func (m *Document) BeforeCreate(tx *gorm.DB) error {

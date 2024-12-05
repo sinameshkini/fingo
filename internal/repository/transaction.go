@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"github.com/sinameshkini/fingo/internal/repository/entities"
 	"github.com/sinameshkini/fingo/pkg/enums"
-	"github.com/sinameshkini/fingo/pkg/types"
 	"github.com/sinameshkini/microkit/models"
 	"gorm.io/gorm"
 )
 
-func (r *repo) GetBalance(ctx context.Context, accountID models.SID) (resp types.Amount, err error) {
+func (r *repo) GetBalance(ctx context.Context, accountID models.SID) (resp models.Amount, err error) {
 	if err = r.db.WithContext(ctx).
 		Model(&entities.Document{}).
 		Where("account_id = ?", accountID).
@@ -30,7 +29,7 @@ func (r *repo) CommitTransaction(tx *gorm.DB) (err error) {
 	return tx.Commit().Error
 }
 
-func (r *repo) Initial(tx *gorm.DB, userID, orderID string, txnType enums.TransactionType, amount types.Amount,
+func (r *repo) Initial(tx *gorm.DB, userID, orderID string, txnType enums.TransactionType, amount models.Amount,
 	description string) (txn *entities.Transaction, err error) {
 
 	txn = &entities.Transaction{
@@ -48,10 +47,10 @@ func (r *repo) Initial(tx *gorm.DB, userID, orderID string, txnType enums.Transa
 	return
 }
 
-func (r *repo) Transfer(tx *gorm.DB, amount types.Amount, txnID, debID, credID models.SID, comment string) (err error) {
+func (r *repo) Transfer(tx *gorm.DB, amount models.Amount, txnID, debID, credID models.SID, comment string) (err error) {
 	var (
-		debBalance  types.Amount
-		credBalance types.Amount
+		debBalance  models.Amount
+		credBalance models.Amount
 	)
 	if err = tx.Model(&entities.Document{}).
 		Where("account_id = ?", debID).
@@ -99,7 +98,7 @@ func (r *repo) Transfer(tx *gorm.DB, amount types.Amount, txnID, debID, credID m
 func (r *repo) Reverse(tx *gorm.DB, transaction *entities.Transaction, reverseTxnID models.SID) (err error) {
 	for i := len(transaction.Documents) - 1; i >= 0; i-- {
 		var (
-			balance types.Amount
+			balance models.Amount
 			d       = transaction.Documents[i]
 		)
 

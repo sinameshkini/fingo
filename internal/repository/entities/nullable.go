@@ -1,8 +1,8 @@
 package entities
 
-import "github.com/sinameshkini/fingo/pkg/types"
+import "github.com/sinameshkini/microkit/models"
 
-func AmountPointer(amount types.Amount) *types.Amount {
+func AmountPointer(amount models.Amount) *models.Amount {
 	return &amount
 }
 

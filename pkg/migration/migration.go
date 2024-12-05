@@ -3,14 +3,14 @@ package migration
 import (
 	"github.com/sinameshkini/fingo/internal/repository/entities"
 	"github.com/sinameshkini/fingo/pkg/enums"
-	"github.com/sinameshkini/fingo/pkg/types"
+	"github.com/sinameshkini/microkit/models"
 	"gorm.io/gorm"
 )
 
 var (
-	minAmount   types.Amount = 10000
-	maxAmount   types.Amount = 10000000
-	defaultCode              = entities.CodeP{
+	minAmount   models.Amount = 10000
+	maxAmount   models.Amount = 10000000
+	defaultCode               = entities.CodeP{
 		FeeType:                 entities.FeeTypePointer(entities.FeeActual),
 		FeeValue:                entities.AmountPointer(0),
 		MinAmountPerTransaction: entities.AmountPointer(minAmount),

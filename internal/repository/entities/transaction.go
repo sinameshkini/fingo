@@ -3,7 +3,6 @@ package entities
 import (
 	"github.com/sinameshkini/fingo/pkg/endpoint"
 	"github.com/sinameshkini/fingo/pkg/enums"
-	"github.com/sinameshkini/fingo/pkg/types"
 	"github.com/sinameshkini/microkit/models"
 	"gorm.io/gorm"
 	"time"
@@ -14,7 +13,7 @@ type Transaction struct {
 	UserID      string
 	OrderID     string
 	Type        enums.TransactionType
-	Amount      types.Amount
+	Amount      models.Amount
 	Description string
 	CreatedAt   time.Time
 	Documents   []Document

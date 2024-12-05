@@ -8,7 +8,7 @@ import (
 	"github.com/sinameshkini/fingo/pkg/endpoint"
 	"github.com/sinameshkini/fingo/pkg/enums"
 	"github.com/sinameshkini/fingo/pkg/sdk"
-	"github.com/sinameshkini/fingo/pkg/types"
+	"github.com/sinameshkini/microkit/models"
 	"github.com/sinameshkini/microkit/pkg/utils"
 )
 
@@ -87,7 +87,7 @@ func GetAccount(cli *sdk.Client, userID, accountType string) (resp *endpoint.Acc
 	return nil, entities.ErrNotFound
 }
 
-func NormalActor(baseURL, userID, shadow string, cnt int, amount types.Amount) (err error) {
+func NormalActor(baseURL, userID, shadow string, cnt int, amount models.Amount) (err error) {
 	cli := sdk.New(baseURL)
 
 	account, err := CreateAccountIfNotExist(cli, userID, enums.ACCOUNTTYPEWALLET, fmt.Sprintf("%s-%s", userID, enums.ACCOUNTTYPEWALLET))
@@ -118,7 +118,7 @@ func NormalActor(baseURL, userID, shadow string, cnt int, amount types.Amount) (
 		return
 	}
 
-	if account.Balance != amount*types.Amount(cnt) {
+	if account.Balance != amount*models.Amount(cnt) {
 		return errors.New("not enough balance")
 	}
 

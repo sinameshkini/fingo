@@ -8,7 +8,6 @@ import (
 	"github.com/sinameshkini/fingo/internal/repository/entities"
 	"github.com/sinameshkini/fingo/pkg/endpoint"
 	"github.com/sinameshkini/fingo/pkg/enums"
-	"github.com/sinameshkini/fingo/pkg/types"
 	"github.com/sinameshkini/microkit/models"
 	"time"
 )
@@ -44,7 +43,7 @@ func (c *Core) Transfer(ctx context.Context, req endpoint.TransferRequest) (resp
 		UserID:      req.UserID,
 		OrderID:     req.OrderID,
 		Type:        req.Type,
-		Amount:      types.Amount(req.TotalAmount),
+		Amount:      models.Amount(req.TotalAmount),
 		Description: req.Description,
 	}
 
@@ -56,7 +55,7 @@ func (c *Core) Transfer(ctx context.Context, req endpoint.TransferRequest) (resp
 	// fee transaction
 	if req.FeeAmount != 0 {
 		if err = c.repo.Transfer(tx,
-			types.Amount(req.FeeAmount),
+			models.Amount(req.FeeAmount),
 			txn.ID,
 			models.ParseIDf(req.DebitAccountID),
 			models.ParseIDf(req.FeeAccountID),
@@ -69,7 +68,7 @@ func (c *Core) Transfer(ctx context.Context, req endpoint.TransferRequest) (resp
 
 	// do transfer
 	if err = c.repo.Transfer(tx,
-		types.Amount(req.RawAmount),
+		models.Amount(req.RawAmount),
 		txn.ID,
 		models.ParseIDf(req.DebitAccountID),
 		models.ParseIDf(req.CreditAccountID),

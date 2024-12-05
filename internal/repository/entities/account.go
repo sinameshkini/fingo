@@ -2,7 +2,6 @@ package entities
 
 import (
 	"github.com/sinameshkini/fingo/pkg/endpoint"
-	"github.com/sinameshkini/fingo/pkg/types"
 	"github.com/sinameshkini/microkit/models"
 	"gorm.io/gorm"
 )
@@ -52,7 +51,7 @@ func (m *Account) BeforeCreate(_ *gorm.DB) error {
 	return nil
 }
 
-func (a *Account) ToResponse(balance types.Amount) *endpoint.AccountResponse {
+func (a *Account) ToResponse(balance models.Amount) *endpoint.AccountResponse {
 	return &endpoint.AccountResponse{
 		ID:          a.ID.String(),
 		UserID:      a.UserID,

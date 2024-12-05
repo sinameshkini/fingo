@@ -1,6 +1,6 @@
 package endpoint
 
-import "github.com/sinameshkini/fingo/pkg/types"
+import "github.com/sinameshkini/microkit/models"
 
 type AccountType struct {
 	ID          string `json:"id"`
@@ -16,15 +16,15 @@ type CreateAccount struct {
 }
 
 type AccountResponse struct {
-	ID          string       `json:"id"`
-	UserID      string       `json:"user_id"`
-	AccountType *AccountType `json:"account_type"`
-	Currency    *Currency    `json:"currency"`
-	Name        string       `json:"name"`
-	Priority    int          `json:"priority"`
-	IsDefault   bool         `json:"is_default"`
-	IsEnable    bool         `json:"is_enable"`
-	Balance     types.Amount `json:"balance"`
+	ID          string        `json:"id"`
+	UserID      string        `json:"user_id"`
+	AccountType *AccountType  `json:"account_type"`
+	Currency    *Currency     `json:"currency"`
+	Name        string        `json:"name"`
+	Priority    int           `json:"priority"`
+	IsDefault   bool          `json:"is_default"`
+	IsEnable    bool          `json:"is_enable"`
+	Balance     models.Amount `json:"balance"`
 }
 
 type Currency struct {

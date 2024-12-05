@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/sinameshkini/fingo/internal/repository/entities"
 	"github.com/sinameshkini/fingo/pkg/enums"
-	"github.com/sinameshkini/fingo/pkg/types"
 	"github.com/sinameshkini/microkit/models"
 	"gorm.io/gorm"
 	"sync"
@@ -33,12 +32,12 @@ type Repository interface {
 	CreateAccount(ctx context.Context, account entities.Account) (*entities.Account, error)
 	GetAccount(ctx context.Context, id models.SID) (*entities.Account, error)
 	GetAccounts(ctx context.Context, userID string) ([]*entities.Account, error)
-	GetBalance(ctx context.Context, accountID models.SID) (types.Amount, error)
+	GetBalance(ctx context.Context, accountID models.SID) (models.Amount, error)
 
 	NewTransaction(ctx context.Context) *gorm.DB
 	CommitTransaction(tx *gorm.DB) error
-	Initial(*gorm.DB, string, string, enums.TransactionType, types.Amount, string) (*entities.Transaction, error)
-	Transfer(tx *gorm.DB, amount types.Amount, txnID, debID, credID models.SID, comment string) error
+	Initial(*gorm.DB, string, string, enums.TransactionType, models.Amount, string) (*entities.Transaction, error)
+	Transfer(tx *gorm.DB, amount models.Amount, txnID, debID, credID models.SID, comment string) error
 	Reverse(tx *gorm.DB, transaction *entities.Transaction, reverseTxnID models.SID) error
 
 	GetTransaction(ctx context.Context, txnID models.SID) (*entities.Transaction, error)
