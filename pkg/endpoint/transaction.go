@@ -38,6 +38,12 @@ type ReverseRequest struct {
 	UserID        string `json:"user_id"`
 }
 
+type InquiryRequest struct {
+	TransactionID string `json:"transaction_id" query:"transaction_id"`
+	UserID        string `json:"user_id" query:"user_id"`
+	OrderID       string `json:"order_id" query:"order_id"`
+}
+
 type HistoryRequest struct {
 	models.PaginationRequest
 	UserID    string `json:"user_id"`

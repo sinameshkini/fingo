@@ -138,6 +138,26 @@ func (r *repo) GetTransaction(ctx context.Context, txnID models.SID) (resp *enti
 	return
 }
 
+func (r *repo) Inquiry(ctx context.Context, req endpoint.InquiryRequest) (resp []*entities.Transaction, err error) {
+	query := r.db.WithContext(ctx).
+		Preload("Documents.Account")
+
+	if txnID := models.ParseIDf(req.TransactionID); txnID != 0 {
+		query = query.Where("id = ?", txnID)
+	}
+
+	if req.OrderID != "" {
+		query = query.Where("order_id = ?", req.OrderID)
+
+	}
+	if err = query.Where("user_id = ?", req.UserID).
+		Find(&resp).Error; err != nil {
+		return
+	}
+
+	return
+}
+
 func (r *repo) GetHistory(ctx context.Context, req endpoint.HistoryRequest) (resp []*entities.Document, meta *models.PaginationResponse, err error) {
 	query := r.db.WithContext(ctx)
 
@@ -160,6 +180,18 @@ func (r *repo) GetHistory(ctx context.Context, req endpoint.HistoryRequest) (res
 	}
 
 	meta = models.MakePaginationResponse(total, req.Page, req.PerPage)
+
+	return
+}
+
+func (r *repo) GetByOrderID(ctx context.Context, userID, orderID string) (resp []*entities.Transaction, err error) {
+	if err = r.db.WithContext(ctx).
+		Preload("Documents.Account").
+		Where("user_ID = ?", userID).
+		Where("order_id = ?", orderID).
+		First(&resp).Error; err != nil {
+		return
+	}
 
 	return
 }

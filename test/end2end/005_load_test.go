@@ -13,7 +13,7 @@ import (
 // ID:			TS005_Load
 // Scenario:	High load request (TPS calculate)
 
-func Test_TS005_Load(t *testing.T) {
+func Test_Load(t *testing.T) {
 	var (
 		userCount                  = 100
 		depositCount               = 5

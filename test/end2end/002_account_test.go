@@ -10,7 +10,7 @@ import (
 // ID:			TS002_Account
 // Scenario:	Create account and get account (info and balance)
 
-func Test_TS002_Account(t *testing.T) {
+func Test_Account(t *testing.T) {
 	cli, _, err := test.Setup()
 	if err != nil {
 		t.Error(err.Error())

@@ -23,16 +23,17 @@ func Init(conf config.Config, c *core.Core) error {
 		return c.String(http.StatusOK, "Running")
 	})
 
-	// Account routes
+	// Configuration routes
 	api.GET("/account_types", h.accountTypes)
 	api.GET("/currencies", h.currencies)
+	api.GET("/policies", h.getPolicy)
 
+	// Account routes
 	api.POST("/accounts", h.newAccount)
 	api.GET("/accounts/:id", h.getAccount)
 	api.GET("/accounts", h.getAccounts)
 
-	api.GET("/policies", h.getPolicy)
-
+	// Transaction routes
 	api.POST("/transfer", h.transfer)
 	api.POST("/reverse", h.reverse)
 	api.GET("/inquiry", h.inquiry)

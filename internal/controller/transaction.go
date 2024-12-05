@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/sinameshkini/fingo/pkg/endpoint"
-	"github.com/sinameshkini/microkit/models"
 )
 
 func (h *ctrl) transfer(c echo.Context) error {
@@ -35,10 +34,12 @@ func (h *ctrl) reverse(c echo.Context) error {
 }
 
 func (h *ctrl) inquiry(c echo.Context) error {
-	userID := c.QueryParam("user_id")
-	txnID := models.ParseIDf(c.QueryParam("transaction_id"))
+	req := endpoint.InquiryRequest{}
+	if err := c.Bind(&req); err != nil {
+		return responseError(c, err)
+	}
 
-	resp, err := h.core.GetTransaction(c.Request().Context(), userID, txnID)
+	resp, err := h.core.Inquiry(c.Request().Context(), req)
 	if err != nil {
 		return responseError(c, err)
 	}

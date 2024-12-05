@@ -22,6 +22,11 @@ func (c *Core) Transfer(ctx context.Context, req endpoint.TransferRequest) (resp
 		return nil, enums.ErrInvalidRequest
 	}
 
+	_, err = c.repo.GetByOrderID(ctx, req.UserID, req.OrderID)
+	if err == nil {
+		return nil, models.ErrAlreadyExist
+	}
+
 	if !req.SkipLock {
 		key := fmt.Sprintf("fingo:lock:%s", req.DebitAccountID)
 
@@ -160,6 +165,23 @@ func (c *Core) GetTransactions(ctx context.Context, req endpoint.HistoryRequest)
 	}
 
 	resp.Meta = meta
+
+	return
+}
+
+func (c *Core) Inquiry(ctx context.Context, req endpoint.InquiryRequest) (resp []*endpoint.TransferResponse, err error) {
+	transactions, err := c.repo.Inquiry(ctx, req)
+	if err != nil {
+		return
+	}
+
+	for _, txn := range transactions {
+		resp = append(resp, txn.ToResponse(req.UserID))
+	}
+
+	if resp == nil {
+		return nil, enums.ErrNotFound
+	}
 
 	return
 }

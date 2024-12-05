@@ -42,6 +42,8 @@ type Repository interface {
 	Reverse(tx *gorm.DB, transaction *entities.Transaction, reverseTxnID models.SID) error
 
 	GetTransaction(ctx context.Context, txnID models.SID) (*entities.Transaction, error)
+	Inquiry(ctx context.Context, req endpoint.InquiryRequest) (resp []*entities.Transaction, err error)
+	GetByOrderID(ctx context.Context, userID, orderID string) (resp []*entities.Transaction, err error)
 	GetHistory(ctx context.Context, req endpoint.HistoryRequest) (resp []*entities.Document, meta *models.PaginationResponse, err error)
 
 	GetPolicies(ctx context.Context, userID, accountID, accountType string) ([]*entities.Policy, error)

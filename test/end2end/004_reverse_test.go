@@ -11,7 +11,7 @@ import (
 // ID:			TS004_Reverse
 // Scenario:	Reverse transaction
 
-func Test_TS004_Reverse(t *testing.T) {
+func Test_Reverse(t *testing.T) {
 	cli, _, err := test.Setup()
 	if err != nil {
 		t.Error(err.Error())
