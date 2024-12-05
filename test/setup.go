@@ -51,7 +51,7 @@ func Setup() (cli *sdk.Client, baseURL string, err error) {
 		time.Sleep(time.Second)
 	}
 
-	cli = sdk.New(baseURL)
+	cli = sdk.New(baseURL, true)
 
 	return
 }

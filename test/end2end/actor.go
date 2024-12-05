@@ -87,7 +87,7 @@ func GetAccount(cli *sdk.Client, userID, accountType string) (resp *endpoint.Acc
 }
 
 func NormalActor(baseURL, userID, shadow string, cnt int, amount models.Amount) (err error) {
-	cli := sdk.New(baseURL)
+	cli := sdk.New(baseURL, true)
 
 	account, err := CreateAccountIfNotExist(cli, userID, enums.ACCOUNTTYPEWALLET, fmt.Sprintf("%s-%s", userID, enums.ACCOUNTTYPEWALLET))
 	if err != nil {
