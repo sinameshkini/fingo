@@ -37,3 +37,14 @@ type ReverseRequest struct {
 	TransactionID string `json:"transaction_id"`
 	UserID        string `json:"user_id"`
 }
+
+type HistoryRequest struct {
+	models.PaginationRequest
+	UserID    string `json:"user_id"`
+	AccountID string `json:"account_id"`
+}
+
+type HistoryResponse struct {
+	Transactions []*TransferResponse        `json:"transactions"`
+	Meta         *models.PaginationResponse `json:"meta"`
+}

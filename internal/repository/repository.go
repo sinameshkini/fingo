@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"github.com/sinameshkini/fingo/internal/repository/entities"
+	"github.com/sinameshkini/fingo/pkg/endpoint"
 	"github.com/sinameshkini/fingo/pkg/enums"
 	"github.com/sinameshkini/microkit/models"
 	"gorm.io/gorm"
@@ -41,7 +42,7 @@ type Repository interface {
 	Reverse(tx *gorm.DB, transaction *entities.Transaction, reverseTxnID models.SID) error
 
 	GetTransaction(ctx context.Context, txnID models.SID) (*entities.Transaction, error)
-	GetHistory(ctx context.Context, accountID models.SID) ([]*entities.Document, error)
+	GetHistory(ctx context.Context, req endpoint.HistoryRequest) (resp []*entities.Document, meta *models.PaginationResponse, err error)
 
 	GetPolicies(ctx context.Context, userID, accountID, accountType string) ([]*entities.Policy, error)
 	GetAccountTypes(ctx context.Context) ([]*entities.AccountType, error)

@@ -35,6 +35,8 @@ func Init(conf config.Config, c *core.Core) error {
 
 	api.POST("/transfer", h.transfer)
 	api.POST("/reverse", h.reverse)
+	api.GET("/inquiry", h.inquiry)
+	api.POST("/history", h.history)
 
 	return e.Start(conf.Address)
 }

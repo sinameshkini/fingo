@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/sinameshkini/fingo/internal/repository/entities"
+	"github.com/sinameshkini/fingo/pkg/endpoint"
 	"github.com/sinameshkini/fingo/pkg/enums"
 	"github.com/sinameshkini/microkit/models"
 	"gorm.io/gorm"
@@ -137,16 +138,28 @@ func (r *repo) GetTransaction(ctx context.Context, txnID models.SID) (resp *enti
 	return
 }
 
-func (r *repo) GetHistory(ctx context.Context, accountID models.SID) (resp []*entities.Document, err error) {
-	if err = r.db.WithContext(ctx).
+func (r *repo) GetHistory(ctx context.Context, req endpoint.HistoryRequest) (resp []*entities.Document, meta *models.PaginationResponse, err error) {
+	query := r.db.WithContext(ctx)
+
+	total, err := models.GetCount(query)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	query = req.ToQuery(query)
+
+	if err = query.
 		//Joins("join documents on transactions.id = documents.transaction_id").
 		//Where("documents.account_id = ?", accountID).
 		//Preload("Documents.Account").
 		Preload("Account").
-		Where("account_id = ?", accountID).
+		Preload("Transaction").
+		Where("account_id = ?", req.AccountID).
 		Find(&resp).Error; err != nil {
 		return
 	}
+
+	meta = models.MakePaginationResponse(total, req.Page, req.PerPage)
 
 	return
 }

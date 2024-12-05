@@ -147,3 +147,19 @@ func (c *Core) Reverse(ctx context.Context, req endpoint.ReverseRequest) (resp *
 
 	return c.GetTransaction(ctx, reverseTxn.UserID, reverseTxn.ID)
 }
+
+func (c *Core) GetTransactions(ctx context.Context, req endpoint.HistoryRequest) (resp *endpoint.HistoryResponse, err error) {
+	resp = &endpoint.HistoryResponse{}
+	docs, meta, err := c.repo.GetHistory(ctx, req)
+	if err != nil {
+		return
+	}
+
+	for _, doc := range docs {
+		resp.Transactions = append(resp.Transactions, doc.ToResponse(req.UserID))
+	}
+
+	resp.Meta = meta
+
+	return
+}

@@ -1,6 +1,7 @@
 package entities
 
 import (
+	"github.com/sinameshkini/fingo/pkg/endpoint"
 	"github.com/sinameshkini/fingo/pkg/enums"
 	"github.com/sinameshkini/microkit/models"
 	"gorm.io/gorm"
@@ -19,7 +20,25 @@ type Document struct {
 	Balance        models.Amount
 }
 
-func (m *Document) BeforeCreate(tx *gorm.DB) error {
-	m.ID = models.Next()
+func (d *Document) ToResponse(userID string) (resp *endpoint.TransferResponse) {
+	if d.Account != nil && d.Account.UserID == userID {
+		return &endpoint.TransferResponse{
+			CreatedAt:       d.CreatedAt,
+			TransactionID:   d.TransactionID.String(),
+			OrderID:         d.Transaction.OrderID,
+			TransactionType: d.Transaction.Type,
+			DocumentType:    d.Type,
+			Description:     d.Transaction.Description,
+			Comment:         d.Comment,
+			Amount:          d.Amount,
+			Balance:         d.Balance,
+		}
+	}
+
+	return nil
+}
+
+func (d *Document) BeforeCreate(tx *gorm.DB) error {
+	d.ID = models.Next()
 	return nil
 }
