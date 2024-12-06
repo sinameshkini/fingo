@@ -159,7 +159,9 @@ func (r *repo) Inquiry(ctx context.Context, req endpoint.InquiryRequest) (resp [
 }
 
 func (r *repo) GetHistory(ctx context.Context, req endpoint.HistoryRequest) (resp []*entities.Document, meta *models.PaginationResponse, err error) {
-	query := r.db.WithContext(ctx)
+	query := r.db.WithContext(ctx).
+		Model(&entities.Document{}).
+		Where("account_id = ?", req.AccountID)
 
 	total, err := models.GetCount(query)
 	if err != nil {
@@ -174,7 +176,7 @@ func (r *repo) GetHistory(ctx context.Context, req endpoint.HistoryRequest) (res
 		//Preload("Documents.Account").
 		Preload("Account").
 		Preload("Transaction").
-		Where("account_id = ?", req.AccountID).
+		Order("id desc").
 		Find(&resp).Error; err != nil {
 		return
 	}

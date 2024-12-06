@@ -62,4 +62,9 @@ func Test_Load(t *testing.T) {
 		t.Errorf("want %d , got %d", wantBalance, shadowAccount.Balance)
 		t.FailNow()
 	}
+
+	if err = CheckHistory(cli, "admin", shadowAccount.ID, shadowAccount.Balance); err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
 }

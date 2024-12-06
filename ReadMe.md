@@ -8,6 +8,27 @@
 - Manage user accounts with different account types and currencies.
 - RESTFul API for seamless integration with other systems.
 - Manage transactions, accounts balance and history
+
+
+- [ ] Configuration
+  - [x] Account Type
+  - [x] Currencies
+  - [ ] Policies
+    - [x] Get
+    - [ ] Create
+    - [ ] Update
+- [ ] Account
+  - [x] Create new
+  - [x] Get with balance
+  - [x] Get list by UserID
+  - [ ] Update info
+- [ ] Transaction
+  - [x] Transfer
+  - [x] Reverse
+  - [x] Inquiry
+  - [x] History
+
+
 ---
 
 ## Development

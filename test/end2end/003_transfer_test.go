@@ -158,6 +158,16 @@ func Test_Transfer_With_Fee(t *testing.T) {
 	}
 	utils.PrintJson(inquiryResp)
 
+	historyResp, err := cli.History(endpoint.HistoryRequest{
+		UserID:    "admin",
+		AccountID: shadowAccount.ID,
+	})
+	if err != nil {
+		t.Error(err.Error())
+		t.FailNow()
+	}
+	utils.PrintJson(historyResp)
+
 	account1, err = cli.GetAccount(account1.ID)
 	if err != nil {
 		t.Error(err.Error())

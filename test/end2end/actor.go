@@ -86,6 +86,45 @@ func GetAccount(cli *sdk.Client, userID, accountType string) (resp *endpoint.Acc
 	return nil, enums.ErrNotFound
 }
 
+func CheckHistory(cli *sdk.Client, userID, accountID string, fromBalance models.Amount) (err error) {
+	var (
+		page        int64 = 1
+		balanceGage       = fromBalance
+	)
+
+	for {
+		historyResp, err := cli.History(endpoint.HistoryRequest{
+			PaginationRequest: models.PaginationRequest{Page: page},
+			UserID:            userID,
+			AccountID:         accountID,
+		})
+		if err != nil {
+			return err
+		}
+
+		for _, t := range historyResp.Transactions {
+			if balanceGage != t.Balance {
+				return fmt.Errorf("invalid transaction balance, got: %d, want: %d", t.Balance, balanceGage)
+			}
+
+			balanceGage += t.Amount * -1
+		}
+
+		if !historyResp.Meta.HasNext {
+			if len(historyResp.Transactions) != 0 {
+				if first := historyResp.Transactions[len(historyResp.Transactions)-1]; first.Balance-first.Amount != 0 {
+					return fmt.Errorf("invalid transaction balance, got: %d, want: 0", first.Balance-first.Amount)
+				}
+			}
+			break
+		}
+
+		page++
+	}
+
+	return
+}
+
 func NormalActor(baseURL, userID, shadow string, cnt int, amount models.Amount) (err error) {
 	cli := sdk.New(baseURL, true)
 
@@ -121,6 +160,10 @@ func NormalActor(baseURL, userID, shadow string, cnt int, amount models.Amount) 
 
 	if account.Balance != beforeBalance+amount*models.Amount(cnt) {
 		return errors.New("not enough balance")
+	}
+
+	if err = CheckHistory(cli, userID, account.ID, account.Balance); err != nil {
+		return
 	}
 
 	return nil
