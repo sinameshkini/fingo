@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-// ID:			TS003_History
+// ID:			TS006_History
 // Scenario:	Check history response
 
 func Test_History(t *testing.T) {

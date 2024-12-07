@@ -26,7 +26,7 @@ func Init(conf config.Config, c *core.Core) error {
 	// Configuration routes
 	api.GET("/account_types", h.accountTypes)
 	api.GET("/currencies", h.currencies)
-	api.GET("/policies", h.getPolicy)
+	api.GET("/settings", h.getSettings)
 
 	// Account routes
 	api.POST("/accounts", h.newAccount)

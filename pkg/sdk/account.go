@@ -78,13 +78,13 @@ func (c *Client) CreateAccount(req endpoint.CreateAccount) (resp *endpoint.Accou
 	return
 }
 
-func (c *Client) GetPolicies(req entities.GetSettingsRequest) (resp *entities.Settings, err error) {
+func (c *Client) GetSettings(req endpoint.GetSettingsRequest) (resp *entities.Settings, err error) {
 	apiResp := &entities.Response{}
 
 	r, err := c.rc.R().
 		SetResult(apiResp).
 		SetError(apiResp).
-		Get("/policies")
+		Get("/settings")
 	if err != nil {
 		return
 	}

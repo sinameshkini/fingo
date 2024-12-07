@@ -19,7 +19,7 @@ func (c *Core) GetCurrencies(ctx context.Context) ([]*entities.Currency, error) 
 
 func (c *Core) NewAccount(ctx context.Context, req endpoint.CreateAccount) (resp *endpoint.AccountResponse, err error) {
 	var (
-		count uint
+		count int
 	)
 
 	_, err = c.repo.GetAccountType(ctx, req.AccountTypeID)
@@ -45,7 +45,7 @@ func (c *Core) NewAccount(ctx context.Context, req endpoint.CreateAccount) (resp
 		}
 	}
 
-	settings, err := c.GetSettings(ctx, entities.GetSettingsRequest{
+	settings, err := c.GetSettings(ctx, endpoint.GetSettingsRequest{
 		UserID:        req.UserID,
 		AccountTypeID: req.AccountTypeID,
 	})
@@ -53,7 +53,7 @@ func (c *Core) NewAccount(ctx context.Context, req endpoint.CreateAccount) (resp
 		return
 	}
 
-	if count >= settings.Limits.NumberOfAccounts[req.AccountTypeID] {
+	if count >= settings.Limits[req.AccountTypeID].NumberOfAccounts {
 		return nil, enums.ErrPermissionDenied
 	}
 

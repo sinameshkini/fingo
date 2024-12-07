@@ -25,7 +25,8 @@ func (m *Policy) BeforeCreate(tx *gorm.DB) error {
 }
 
 type SettingsP struct {
-	Limits               *LimitsP
+	//Limits               *LimitsP
+	Limits               map[string]LimitsP
 	Codes                map[enums.ProcessCode]CodeP
 	DefaultAccountTypeID *string
 }
@@ -33,7 +34,7 @@ type SettingsP struct {
 type LimitsP struct {
 	MinBalance       *models.Amount
 	MaxBalance       *models.Amount
-	NumberOfAccounts map[string]uint
+	NumberOfAccounts *int
 }
 
 type CodeP struct {
@@ -73,14 +74,9 @@ const (
 	FeePercentage FeeType = "percentage"
 )
 
-type GetSettingsRequest struct {
-	UserID        string `query:"user_id"`
-	AccountID     string `query:"account_id"`
-	AccountTypeID string `query:"account_type_id"`
-}
-
 type Settings struct {
-	Limits               Limits
+	//Limits               Limits
+	Limits               map[string]Limits
 	Codes                map[enums.ProcessCode]Code
 	DefaultAccountTypeID string
 }
@@ -88,7 +84,7 @@ type Settings struct {
 type Limits struct {
 	MinBalance       models.Amount
 	MaxBalance       models.Amount
-	NumberOfAccounts map[string]uint
+	NumberOfAccounts int
 }
 
 type Code struct {

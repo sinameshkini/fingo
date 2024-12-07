@@ -1,7 +1,7 @@
 package end2end
 
 import (
-	"github.com/sinameshkini/fingo/internal/repository/entities"
+	"github.com/sinameshkini/fingo/pkg/endpoint"
 	"github.com/sinameshkini/fingo/test"
 	"github.com/sinameshkini/microkit/pkg/utils"
 	"testing"
@@ -17,7 +17,7 @@ func Test_TS001_Check(t *testing.T) {
 		t.FailNow()
 	}
 
-	settings, err := cli.GetPolicies(entities.GetSettingsRequest{})
+	settings, err := cli.GetSettings(endpoint.GetSettingsRequest{})
 	if err != nil {
 		t.Error(err.Error())
 		t.FailNow()

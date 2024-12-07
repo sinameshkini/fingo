@@ -2,11 +2,11 @@ package controller
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/sinameshkini/fingo/internal/repository/entities"
+	"github.com/sinameshkini/fingo/pkg/endpoint"
 )
 
-func (h *ctrl) getPolicy(c echo.Context) error {
-	req := entities.GetSettingsRequest{}
+func (h *ctrl) getSettings(c echo.Context) error {
+	req := endpoint.GetSettingsRequest{}
 	if err := c.Bind(&req); err != nil {
 		return responseError(c, err)
 	}

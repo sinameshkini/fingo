@@ -10,6 +10,3 @@ test:
 
 refresh:
 	go run cmd/migrator/main.go
-
-tester:
-	go run cmd/tester/main.go

@@ -81,10 +81,12 @@ func Seed(db *gorm.DB) (err error) {
 			EntityType: "user_group",
 			EntityID:   "",
 			Settings: entities.SettingsP{
-				Limits: &entities.LimitsP{
-					MinBalance:       entities.AmountPointer(0),
-					MaxBalance:       entities.AmountPointer(maxAmount),
-					NumberOfAccounts: map[string]uint{enums.ACCOUNTTYPEWALLET: 1},
+				Limits: map[string]entities.LimitsP{
+					enums.ACCOUNTTYPEWALLET: {
+						MinBalance:       entities.AmountPointer(0),
+						MaxBalance:       entities.AmountPointer(maxAmount),
+						NumberOfAccounts: entities.IntPointer(1),
+					},
 				},
 				DefaultAccountTypeID: entities.StringPointer(enums.ACCOUNTTYPEWALLET),
 			},
@@ -95,9 +97,11 @@ func Seed(db *gorm.DB) (err error) {
 			EntityType: "account_type",
 			EntityID:   enums.ACCOUNTTYPEWALLET,
 			Settings: entities.SettingsP{
-				Limits: &entities.LimitsP{
-					MinBalance: entities.AmountPointer(0),
-					MaxBalance: entities.AmountPointer(maxAmount),
+				Limits: map[string]entities.LimitsP{
+					enums.ACCOUNTTYPEWALLET: {
+						MinBalance: entities.AmountPointer(0),
+						MaxBalance: entities.AmountPointer(maxAmount),
+					},
 				},
 				Codes: map[enums.ProcessCode]entities.CodeP{
 					enums.CodeDepositCredit:  defaultCode,
@@ -114,10 +118,12 @@ func Seed(db *gorm.DB) (err error) {
 			EntityType: "account_type",
 			EntityID:   enums.ACCOUNTTYPESHADOW,
 			Settings: entities.SettingsP{
-				Limits: &entities.LimitsP{
-					MinBalance:       entities.AmountPointer(-10000000000),
-					MaxBalance:       entities.AmountPointer(0),
-					NumberOfAccounts: map[string]uint{enums.ACCOUNTTYPESHADOW: 1},
+				Limits: map[string]entities.LimitsP{
+					enums.ACCOUNTTYPESHADOW: {
+						MinBalance:       entities.AmountPointer(-10000000000),
+						MaxBalance:       entities.AmountPointer(0),
+						NumberOfAccounts: entities.IntPointer(1),
+					},
 				},
 				Codes: map[enums.ProcessCode]entities.CodeP{
 					enums.CodeDepositDebit: defaultCode,
@@ -130,10 +136,12 @@ func Seed(db *gorm.DB) (err error) {
 			EntityType: "account_type",
 			EntityID:   enums.ACCOUNTTYPETERMINAL,
 			Settings: entities.SettingsP{
-				Limits: &entities.LimitsP{
-					MinBalance:       entities.AmountPointer(0),
-					MaxBalance:       entities.AmountPointer(maxAmount),
-					NumberOfAccounts: map[string]uint{enums.ACCOUNTTYPETERMINAL: 1},
+				Limits: map[string]entities.LimitsP{
+					enums.ACCOUNTTYPETERMINAL: {
+						MinBalance:       entities.AmountPointer(0),
+						MaxBalance:       entities.AmountPointer(maxAmount),
+						NumberOfAccounts: entities.IntPointer(1),
+					},
 				},
 				Codes: map[enums.ProcessCode]entities.CodeP{
 					enums.CodePurchaseCredit: defaultCode,
@@ -146,10 +154,12 @@ func Seed(db *gorm.DB) (err error) {
 			EntityType: "account_type",
 			EntityID:   enums.ACCOUNTTYPEEXTERNALACCOUNT,
 			Settings: entities.SettingsP{
-				Limits: &entities.LimitsP{
-					MinBalance:       entities.AmountPointer(0),
-					MaxBalance:       entities.AmountPointer(maxAmount),
-					NumberOfAccounts: map[string]uint{enums.ACCOUNTTYPEEXTERNALACCOUNT: 1},
+				Limits: map[string]entities.LimitsP{
+					enums.ACCOUNTTYPEEXTERNALACCOUNT: {
+						MinBalance:       entities.AmountPointer(0),
+						MaxBalance:       entities.AmountPointer(maxAmount),
+						NumberOfAccounts: entities.IntPointer(1),
+					},
 				},
 				Codes: map[enums.ProcessCode]entities.CodeP{
 					enums.CodeWithdrawCredit: defaultCode,
@@ -162,33 +172,18 @@ func Seed(db *gorm.DB) (err error) {
 			EntityType: "account_type",
 			EntityID:   enums.ACCOUNTTYPEFEE,
 			Settings: entities.SettingsP{
-				Limits: &entities.LimitsP{
-					MinBalance:       entities.AmountPointer(0),
-					MaxBalance:       entities.AmountPointer(maxAmount),
-					NumberOfAccounts: map[string]uint{enums.ACCOUNTTYPEFEE: 1},
+				Limits: map[string]entities.LimitsP{
+					enums.ACCOUNTTYPEFEE: {
+						MinBalance:       entities.AmountPointer(0),
+						MaxBalance:       entities.AmountPointer(maxAmount),
+						NumberOfAccounts: entities.IntPointer(1),
+					},
 				},
 				Codes: map[enums.ProcessCode]entities.CodeP{
 					enums.CodeWithdrawCredit: defaultCode,
 				},
 			},
 			Priority: 32,
-			IsEnable: true,
-		},
-		{
-			EntityType: "account_type",
-			EntityID:   "9",
-			Settings: entities.SettingsP{
-				Limits: &entities.LimitsP{
-					MinBalance:       entities.AmountPointer(0),
-					MaxBalance:       entities.AmountPointer(maxAmount),
-					NumberOfAccounts: map[string]uint{enums.ACCOUNTTYPEWALLET: 1},
-				},
-				Codes: map[enums.ProcessCode]entities.CodeP{
-					enums.CodeDepositCredit: defaultCode,
-					enums.CodePurchaseDebit: defaultCode,
-				},
-			},
-			Priority: 30,
 			IsEnable: true,
 		},
 	}

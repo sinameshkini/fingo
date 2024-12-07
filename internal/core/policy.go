@@ -3,16 +3,18 @@ package core
 import (
 	"context"
 	"github.com/sinameshkini/fingo/internal/repository/entities"
+	"github.com/sinameshkini/fingo/pkg/endpoint"
 	"github.com/sinameshkini/fingo/pkg/enums"
 )
 
-func (c *Core) GetSettings(ctx context.Context, req entities.GetSettingsRequest) (settings *entities.Settings, err error) {
+func (c *Core) GetSettings(ctx context.Context, req endpoint.GetSettingsRequest) (settings *entities.Settings, err error) {
 	var (
 		policies []*entities.Policy
 		sp       = entities.SettingsP{
-			Limits: &entities.LimitsP{
-				NumberOfAccounts: make(map[string]uint),
-			},
+			Limits: make(map[string]entities.LimitsP),
+			//Limits: &entities.LimitsP{
+			//	NumberOfAccounts: make(map[string]uint),
+			//},
 			Codes: make(map[enums.ProcessCode]entities.CodeP),
 		}
 	)
@@ -51,21 +53,29 @@ func validate(sp entities.SettingsP) (s *entities.Settings, err error) {
 		return
 	}
 
-	if sp.Limits.MaxBalance == nil {
-		return
-	}
-
-	if sp.Limits.MinBalance == nil {
-		return
-	}
-
 	s = &entities.Settings{
-		Limits: entities.Limits{
-			MinBalance:       *sp.Limits.MinBalance,
-			MaxBalance:       *sp.Limits.MaxBalance,
-			NumberOfAccounts: make(map[string]uint),
-		},
-		Codes: make(map[enums.ProcessCode]entities.Code),
+		Limits: make(map[string]entities.Limits),
+		Codes:  make(map[enums.ProcessCode]entities.Code),
+	}
+
+	for at, l := range sp.Limits {
+		if v := l.MinBalance; v == nil {
+			return
+		}
+
+		if v := l.MaxBalance; v == nil {
+			return
+		}
+
+		if v := l.NumberOfAccounts; v == nil {
+			return
+		}
+
+		s.Limits[at] = entities.Limits{
+			MinBalance:       *l.MinBalance,
+			MaxBalance:       *l.MaxBalance,
+			NumberOfAccounts: *l.NumberOfAccounts,
+		}
 	}
 
 	for pc, c := range sp.Codes {
@@ -109,26 +119,32 @@ func validate(sp entities.SettingsP) (s *entities.Settings, err error) {
 
 	s.DefaultAccountTypeID = *sp.DefaultAccountTypeID
 
-	s.Limits.NumberOfAccounts = sp.Limits.NumberOfAccounts
-
 	err = nil
 
 	return
 }
 
 func merge(sp, in entities.SettingsP) entities.SettingsP {
-	if in.Limits != nil {
-		if in.Limits.MinBalance != nil {
-			sp.Limits.MinBalance = in.Limits.MinBalance
+	for at, l := range in.Limits {
+		existed, ok := sp.Limits[at]
+		if !ok {
+			sp.Limits[at] = l
+			continue
 		}
 
-		if in.Limits.MaxBalance != nil {
-			sp.Limits.MaxBalance = in.Limits.MaxBalance
+		if v := l.MinBalance; v != nil {
+			existed.MinBalance = v
 		}
-	}
 
-	for t, n := range in.Limits.NumberOfAccounts {
-		sp.Limits.NumberOfAccounts[t] = n
+		if v := l.MaxBalance; v != nil {
+			existed.MaxBalance = v
+		}
+
+		if v := l.NumberOfAccounts; v != nil {
+			existed.NumberOfAccounts = v
+		}
+
+		sp.Limits[at] = existed
 	}
 
 	for pc, c := range in.Codes {
