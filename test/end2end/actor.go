@@ -136,15 +136,20 @@ func NormalActor(baseURL, userID, shadow string, cnt int, amount models.Amount) 
 	beforeBalance := account.Balance
 
 	for i := 0; i < cnt; i++ {
-		depositTxn, err := cli.Transfer(endpoint.TransferRequest{
-			UserID:          "admin",
-			Type:            enums.Deposit,
-			OrderID:         uuid.NewString(),
-			DebitAccountID:  shadow,
-			CreditAccountID: account.ID,
-			RawAmount:       amount,
-			TotalAmount:     amount,
-			Description:     fmt.Sprintf("%s deposit %d", userID, i),
+		depositTxn, err := cli.Transfer(endpoint.TransactionRequest{
+			UserID:      "admin",
+			Type:        enums.Deposit,
+			OrderID:     uuid.NewString(),
+			TotalAmount: amount,
+			Description: fmt.Sprintf("%s deposit %d", userID, i),
+			Transfers: []endpoint.TransferRequest{
+				{
+					DebitAccountID:  shadow,
+					CreditAccountID: account.ID,
+					Amount:          amount,
+					Comment:         fmt.Sprintf("%s deposit %d", userID, i),
+				},
+			},
 		})
 		if err != nil {
 			return err

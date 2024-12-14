@@ -20,7 +20,7 @@ type Policy struct {
 }
 
 func (m *Policy) BeforeCreate(tx *gorm.DB) error {
-	m.ID = models.Next()
+	m.ID = models.NextSID()
 	return nil
 }
 

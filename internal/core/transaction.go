@@ -13,13 +13,19 @@ import (
 )
 
 // Transfer is an internal API for other modules to do any transaction
-func (c *Core) Transfer(ctx context.Context, req endpoint.TransferRequest) (resp *endpoint.TransferResponse, err error) {
+func (c *Core) Transfer(ctx context.Context, req endpoint.TransactionRequest) (resp *endpoint.TransactionResponse, err error) {
 	var (
-		l *redislock.Lock
+		locks []*redislock.Lock
 	)
 
-	if req.RawAmount+req.FeeAmount != req.TotalAmount {
-		return nil, enums.ErrInvalidRequest
+	// validate request
+	if err = c.validate.Struct(req); err != nil {
+		return
+	}
+
+	// validate request amounts
+	if err = req.ValidateAmount(); err != nil {
+		return
 	}
 
 	_, err = c.repo.GetByOrderID(ctx, req.UserID, req.OrderID)
@@ -27,16 +33,10 @@ func (c *Core) Transfer(ctx context.Context, req endpoint.TransferRequest) (resp
 		return nil, models.ErrAlreadyExist
 	}
 
-	if !req.SkipLock {
-		key := fmt.Sprintf("fingo:lock:%s", req.DebitAccountID)
-
-		l, err = c.lock.Obtain(ctx, key, 10*time.Second, nil)
-		if err != nil {
-			return nil, enums.ErrToManyRequests
-		}
+	txn, tx, err := c.repo.NewTransaction(ctx, req.UserID, req.OrderID, req.Description, req.Type, req.TotalAmount)
+	if err != nil {
+		return
 	}
-
-	tx := c.repo.NewTransaction(ctx)
 	defer func() {
 		if r := recover(); r != nil {
 			log.Error(fmt.Sprintf("%+v", r))
@@ -44,43 +44,39 @@ func (c *Core) Transfer(ctx context.Context, req endpoint.TransferRequest) (resp
 		}
 	}()
 
-	txn := &entities.Transaction{
-		UserID:      req.UserID,
-		OrderID:     req.OrderID,
-		Type:        req.Type,
-		Amount:      models.Amount(req.TotalAmount),
-		Description: req.Description,
+	if c.env.Lock {
+		defer func() {
+			for _, l := range locks {
+				if err = l.Release(ctx); err != nil {
+					return
+				}
+			}
+		}()
 	}
 
-	if err = tx.Create(&txn).Error; err != nil {
-		tx.Rollback()
-		return
-	}
+	for _, transfer := range req.Transfers {
+		if c.env.Lock && !transfer.SkipLock {
+			key := fmt.Sprintf("fingo:lock:%s", transfer.DebitAccountID)
 
-	// fee transaction
-	if req.FeeAmount != 0 {
-		if err = c.repo.Transfer(tx,
-			models.Amount(req.FeeAmount),
+			l, err := c.lock.Obtain(ctx, key, 10*time.Second, nil)
+			if err != nil {
+				return nil, enums.ErrToManyRequests
+			}
+
+			locks = append(locks, l)
+		}
+
+		if err = c.repo.Transfer(
+			tx,
+			transfer.Amount,
 			txn.ID,
-			models.ParseIDf(req.DebitAccountID),
-			models.ParseIDf(req.FeeAccountID),
-			req.FeeDescription,
+			models.ParseSIDf(transfer.DebitAccountID),
+			models.ParseSIDf(transfer.CreditAccountID),
+			transfer.Comment,
 		); err != nil {
 			tx.Rollback()
 			return nil, err
 		}
-	}
-
-	// do transfer
-	if err = c.repo.Transfer(tx,
-		models.Amount(req.RawAmount),
-		txn.ID,
-		models.ParseIDf(req.DebitAccountID),
-		models.ParseIDf(req.CreditAccountID),
-		req.Description,
-	); err != nil {
-		tx.Rollback()
-		return
 	}
 
 	// commit transaction
@@ -88,16 +84,10 @@ func (c *Core) Transfer(ctx context.Context, req endpoint.TransferRequest) (resp
 		return
 	}
 
-	if !req.SkipLock && l != nil {
-		if err = l.Release(ctx); err != nil {
-			return
-		}
-	}
-
 	return c.GetTransaction(ctx, req.UserID, txn.ID)
 }
 
-func (c *Core) GetTransaction(ctx context.Context, userID string, txnID models.SID) (resp *endpoint.TransferResponse, err error) {
+func (c *Core) GetTransaction(ctx context.Context, userID string, txnID models.SID) (resp *endpoint.TransactionResponse, err error) {
 	txn, err := c.repo.GetTransaction(ctx, txnID)
 	if err != nil {
 		return
@@ -111,13 +101,13 @@ func (c *Core) GetTransaction(ctx context.Context, userID string, txnID models.S
 	return
 }
 
-func (c *Core) Reverse(ctx context.Context, req endpoint.ReverseRequest) (resp *endpoint.TransferResponse, err error) {
+func (c *Core) Reverse(ctx context.Context, req endpoint.ReverseRequest) (resp *endpoint.TransactionResponse, err error) {
 	var (
 		transaction *entities.Transaction
 	)
 
 	// get txn by ID
-	if transaction, err = c.repo.GetTransaction(ctx, models.ParseIDf(req.TransactionID)); err != nil {
+	if transaction, err = c.repo.GetTransaction(ctx, models.ParseSIDf(req.TransactionID)); err != nil {
 		return
 	}
 
@@ -126,19 +116,16 @@ func (c *Core) Reverse(ctx context.Context, req endpoint.ReverseRequest) (resp *
 	}
 
 	// do reverse
-	tx := c.repo.NewTransaction(ctx)
+	reverseTxn, tx, err := c.repo.NewTransaction(ctx, req.UserID, transaction.OrderID, req.Description, enums.Reverse, transaction.Amount)
+	if err != nil {
+		return
+	}
 	defer func() {
 		if r := recover(); r != nil {
 			log.Error(fmt.Sprintf("%+v", r))
 			tx.Rollback()
 		}
 	}()
-
-	reverseTxn, err := c.repo.Initial(tx, req.UserID, transaction.OrderID, enums.Reverse, transaction.Amount, enums.Reverse.Label())
-	if err != nil {
-		tx.Rollback()
-		return
-	}
 
 	if err = c.repo.Reverse(tx, transaction, reverseTxn.ID); err != nil {
 		tx.Rollback()
@@ -169,7 +156,7 @@ func (c *Core) GetTransactions(ctx context.Context, req endpoint.HistoryRequest)
 	return
 }
 
-func (c *Core) Inquiry(ctx context.Context, req endpoint.InquiryRequest) (resp []*endpoint.TransferResponse, err error) {
+func (c *Core) Inquiry(ctx context.Context, req endpoint.InquiryRequest) (resp []*endpoint.TransactionResponse, err error) {
 	transactions, err := c.repo.Inquiry(ctx, req)
 	if err != nil {
 		return

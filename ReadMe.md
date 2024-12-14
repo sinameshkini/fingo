@@ -27,6 +27,7 @@
   - [x] Reverse
   - [x] Inquiry
   - [x] History
+  - [x] Multi Transfer
 
 
 ---

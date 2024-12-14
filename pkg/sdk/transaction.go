@@ -8,7 +8,7 @@ import (
 	"github.com/sinameshkini/microkit/pkg/utils"
 )
 
-func (c *Client) Transfer(req endpoint.TransferRequest) (resp *endpoint.TransferResponse, err error) {
+func (c *Client) Transfer(req endpoint.TransactionRequest) (resp *endpoint.TransactionResponse, err error) {
 	apiResp := &entities.Response{}
 
 	r, err := c.rc.R().

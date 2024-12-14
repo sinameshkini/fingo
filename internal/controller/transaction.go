@@ -6,7 +6,7 @@ import (
 )
 
 func (h *ctrl) transfer(c echo.Context) error {
-	req := endpoint.TransferRequest{}
+	req := endpoint.TransactionRequest{}
 	if err := c.Bind(&req); err != nil {
 		return responseError(c, err)
 	}

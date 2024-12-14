@@ -22,16 +22,18 @@ func (r *repo) GetBalance(ctx context.Context, accountID models.SID) (resp model
 	return
 }
 
-func (r *repo) NewTransaction(ctx context.Context) (tx *gorm.DB) {
-	return r.db.WithContext(ctx).Begin()
-}
+func (r *repo) NewTransaction(
+	ctx context.Context,
+	userID, orderID, description string,
+	txnType enums.TransactionType,
+	amount models.Amount,
+) (
+	txn *entities.Transaction,
+	tx *gorm.DB,
+	err error,
+) {
 
-func (r *repo) CommitTransaction(tx *gorm.DB) (err error) {
-	return tx.Commit().Error
-}
-
-func (r *repo) Initial(tx *gorm.DB, userID, orderID string, txnType enums.TransactionType, amount models.Amount,
-	description string) (txn *entities.Transaction, err error) {
+	tx = r.db.WithContext(ctx).Begin()
 
 	txn = &entities.Transaction{
 		UserID:      userID,
@@ -42,10 +44,14 @@ func (r *repo) Initial(tx *gorm.DB, userID, orderID string, txnType enums.Transa
 	}
 
 	if err = tx.Create(&txn).Error; err != nil {
-		return nil, err
+		return
 	}
 
 	return
+}
+
+func (r *repo) CommitTransaction(tx *gorm.DB) (err error) {
+	return tx.Commit().Error
 }
 
 func (r *repo) Transfer(tx *gorm.DB, amount models.Amount, txnID, debID, credID models.SID, comment string) (err error) {
@@ -142,7 +148,7 @@ func (r *repo) Inquiry(ctx context.Context, req endpoint.InquiryRequest) (resp [
 	query := r.db.WithContext(ctx).
 		Preload("Documents.Account")
 
-	if txnID := models.ParseIDf(req.TransactionID); txnID != 0 {
+	if txnID := models.ParseSIDf(req.TransactionID); txnID != 0 {
 		query = query.Where("id = ?", txnID)
 	}
 

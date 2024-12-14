@@ -10,7 +10,7 @@ const (
 	Reverse    TransactionType = "reverse"
 	PayLoan    TransactionType = "pay_loan"
 	PayoffLoan TransactionType = "payoff_loan"
-	Unknown    TransactionType = "unknown"
+	Unknown    TransactionType = ""
 )
 
 func (t TransactionType) Label() string {

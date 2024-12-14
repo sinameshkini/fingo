@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/sinameshkini/fingo/internal/config"
 	"github.com/sinameshkini/fingo/internal/controller"
 	"github.com/sinameshkini/fingo/internal/core"
@@ -16,6 +17,8 @@ func Run(conf config.Config) (err error) {
 	log.Println("fingo starting ...")
 
 	models.InitSnowflakeID(1)
+
+	validate := validator.New(validator.WithRequiredStructEnabled())
 
 	db, err := database.NewDBWithConf(conf.Database)
 	if err != nil {
@@ -42,11 +45,11 @@ func Run(conf config.Config) (err error) {
 		}
 	}()
 
-	ca := cache.New(*conf.Cache)
+	ca := cache.New(conf.Cache)
 
 	repo := repository.New(db)
 
-	c := core.New(repo, ca)
+	c := core.New(conf.Env, repo, ca, validate)
 
 	return controller.Init(conf, c)
 }

@@ -25,3 +25,25 @@ func Test_Account(t *testing.T) {
 
 	utils.PrintJson(account)
 }
+
+func Test_Account_Duplicate(t *testing.T) {
+	cli, _, err := test.Setup()
+	if err != nil {
+		t.Error(err.Error())
+		t.FailNow()
+	}
+
+	account1, err := CreateAccount(cli, "user1", enums.ACCOUNTTYPEWALLET, "user1")
+	if err != nil {
+		t.Error(err.Error())
+		t.FailNow()
+	}
+	utils.PrintJson(account1)
+
+	_, err = CreateAccount(cli, "user1", enums.ACCOUNTTYPEWALLET, "user1")
+	if err == nil {
+		t.Error("account inserted out of limits")
+		t.FailNow()
+	}
+	utils.PrintJson(err)
+}

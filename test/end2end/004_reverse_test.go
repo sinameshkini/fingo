@@ -30,15 +30,20 @@ func Test_Reverse(t *testing.T) {
 		t.FailNow()
 	}
 
-	depositTxn, err := cli.Transfer(endpoint.TransferRequest{
-		UserID:          "admin",
-		Type:            enums.Deposit,
-		OrderID:         "1234",
-		DebitAccountID:  shadowAccount.ID,
-		CreditAccountID: account1.ID,
-		RawAmount:       1000,
-		TotalAmount:     1000,
-		Description:     "Deposit test",
+	depositTxn, err := cli.Transfer(endpoint.TransactionRequest{
+		UserID:      "admin",
+		Type:        enums.Deposit,
+		OrderID:     "1234",
+		TotalAmount: 1000,
+		Description: "Deposit test",
+		Transfers: []endpoint.TransferRequest{
+			{
+				DebitAccountID:  shadowAccount.ID,
+				CreditAccountID: account1.ID,
+				Amount:          1000,
+				Comment:         "Deposit",
+			},
+		},
 	})
 	if err != nil {
 		t.Error(err.Error())

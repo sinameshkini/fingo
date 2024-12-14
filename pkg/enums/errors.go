@@ -6,14 +6,15 @@ import (
 )
 
 var (
-	ErrAccountTypeInvalid = errors.New("account type is invalid")
-	ErrCurrencyInvalid    = errors.New("currency is invalid")
-	ErrInternal           = errors.New("internal error, try again later")
-	ErrNotFound           = errors.New("not found")
-	ErrPermissionDenied   = errors.New("permission denied")
-	ErrNotEnoughBalance   = errors.New("not enough balance")
-	ErrInvalidRequest     = errors.New("invalid request")
-	ErrToManyRequests     = errors.New("too many requests")
+	ErrAccountTypeInvalid      = errors.New("account type is invalid")
+	ErrCurrencyInvalid         = errors.New("currency is invalid")
+	ErrInternal                = errors.New("internal error, try again later")
+	ErrNotFound                = errors.New("not found")
+	ErrPermissionDenied        = errors.New("permission denied")
+	ErrNotEnoughBalance        = errors.New("not enough balance")
+	ErrInvalidRequest          = errors.New("invalid request")
+	ErrToManyRequests          = errors.New("too many requests")
+	ErrInvalidAmountCalculated = errors.New("invalid amount calculated")
 )
 
 var ErrCode = map[error]int{

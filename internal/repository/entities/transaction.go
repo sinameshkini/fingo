@@ -30,10 +30,10 @@ func (m *Transaction) CheckUserID(userID string) bool {
 	return false
 }
 
-func (m *Transaction) ToResponse(userID string) (resp *endpoint.TransferResponse) {
+func (m *Transaction) ToResponse(userID string) (resp *endpoint.TransactionResponse) {
 	for _, d := range m.Documents {
 		if d.Account != nil && d.Account.UserID == userID {
-			return &endpoint.TransferResponse{
+			return &endpoint.TransactionResponse{
 				CreatedAt:       d.CreatedAt,
 				TransactionID:   m.ID.String(),
 				OrderID:         m.OrderID,
@@ -51,6 +51,6 @@ func (m *Transaction) ToResponse(userID string) (resp *endpoint.TransferResponse
 }
 
 func (m *Transaction) BeforeCreate(_ *gorm.DB) error {
-	m.ID = models.Next()
+	m.ID = models.NextSID()
 	return nil
 }

@@ -35,9 +35,8 @@ type Repository interface {
 	GetAccounts(ctx context.Context, userID string) ([]*entities.Account, error)
 	GetBalance(ctx context.Context, accountID models.SID) (models.Amount, error)
 
-	NewTransaction(ctx context.Context) *gorm.DB
+	NewTransaction(ctx context.Context, userID, orderID, description string, txnType enums.TransactionType, amount models.Amount) (txn *entities.Transaction, tx *gorm.DB, err error)
 	CommitTransaction(tx *gorm.DB) error
-	Initial(*gorm.DB, string, string, enums.TransactionType, models.Amount, string) (*entities.Transaction, error)
 	Transfer(tx *gorm.DB, amount models.Amount, txnID, debID, credID models.SID, comment string) error
 	Reverse(tx *gorm.DB, transaction *entities.Transaction, reverseTxnID models.SID) error
 

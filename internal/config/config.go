@@ -6,12 +6,20 @@ import (
 )
 
 type Config struct {
+	Env      *Env
 	Address  string
 	Database *database.Config
 	Cache    *cache.Config
 }
 
+type Env struct {
+	Lock bool
+}
+
 var DefaultConf = Config{
+	Env: &Env{
+		Lock: true,
+	},
 	Address: ":4000",
 	Database: &database.Config{
 		Host:     "localhost",

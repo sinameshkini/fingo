@@ -48,7 +48,7 @@ func (m *Account) GetSettings() (*Settings, error) {
 }
 
 func (m *Account) BeforeCreate(_ *gorm.DB) error {
-	m.ID = models.Next()
+	m.ID = models.NextSID()
 	return nil
 }
 

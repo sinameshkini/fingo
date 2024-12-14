@@ -30,15 +30,20 @@ func Test_Transfer(t *testing.T) {
 		t.FailNow()
 	}
 
-	depositTxn, err := cli.Transfer(endpoint.TransferRequest{
-		UserID:          "admin",
-		Type:            enums.Deposit,
-		OrderID:         "1234",
-		DebitAccountID:  shadowAccount.ID,
-		CreditAccountID: account1.ID,
-		RawAmount:       1000,
-		TotalAmount:     1000,
-		Description:     "Deposit test",
+	depositTxn, err := cli.Transfer(endpoint.TransactionRequest{
+		UserID:      "admin",
+		Type:        enums.Deposit,
+		OrderID:     "1234",
+		TotalAmount: 1000,
+		Description: "Deposit test",
+		Transfers: []endpoint.TransferRequest{
+			{
+				DebitAccountID:  shadowAccount.ID,
+				CreditAccountID: account1.ID,
+				Amount:          1000,
+				Comment:         "Deposit",
+			},
+		},
 	})
 	if err != nil {
 		t.Error(err.Error())
@@ -53,15 +58,20 @@ func Test_Transfer(t *testing.T) {
 		t.FailNow()
 	}
 
-	transferTxn, err := cli.Transfer(endpoint.TransferRequest{
-		UserID:          "user1",
-		Type:            enums.Transfer,
-		OrderID:         "1234",
-		DebitAccountID:  account1.ID,
-		CreditAccountID: account2.ID,
-		RawAmount:       400,
-		TotalAmount:     400,
-		Description:     "Transfer test",
+	transferTxn, err := cli.Transfer(endpoint.TransactionRequest{
+		UserID:      "user1",
+		Type:        enums.Transfer,
+		OrderID:     "1234",
+		TotalAmount: 400,
+		Description: "Transfer test",
+		Transfers: []endpoint.TransferRequest{
+			{
+				DebitAccountID:  account1.ID,
+				CreditAccountID: account2.ID,
+				Amount:          400,
+				Comment:         "Transfer",
+			},
+		},
 	})
 	if err != nil {
 		t.Error(err.Error())
@@ -128,24 +138,31 @@ func Test_Transfer_With_Fee(t *testing.T) {
 		t.FailNow()
 	}
 
-	depositTxn, err := cli.Transfer(endpoint.TransferRequest{
-		UserID:          "admin",
-		Type:            enums.Deposit,
-		OrderID:         "1234",
-		DebitAccountID:  shadowAccount.ID,
-		CreditAccountID: account1.ID,
-		RawAmount:       1000,
-		Description:     "Deposit test",
-		FeeAccountID:    feeAccount.ID,
-		FeeAmount:       100,
-		FeeDescription:  "Deposit Fee",
-		TotalAmount:     1100,
+	depositTxn, err := cli.Transfer(endpoint.TransactionRequest{
+		UserID:      "admin",
+		Type:        enums.Deposit,
+		OrderID:     "1234",
+		TotalAmount: 1100,
+		Description: "Deposit test",
+		Transfers: []endpoint.TransferRequest{
+			{
+				DebitAccountID:  shadowAccount.ID,
+				CreditAccountID: account1.ID,
+				Amount:          1000,
+				Comment:         "Deposit",
+			},
+			{
+				DebitAccountID:  shadowAccount.ID,
+				CreditAccountID: feeAccount.ID,
+				Amount:          100,
+				Comment:         "Deposit Fee",
+			},
+		},
 	})
 	if err != nil {
 		t.Error(err.Error())
 		t.FailNow()
 	}
-	//utils.PrintJson(depositTxn)
 
 	inquiryResp, err := cli.Inquiry(endpoint.InquiryRequest{
 		TransactionID: depositTxn.TransactionID,

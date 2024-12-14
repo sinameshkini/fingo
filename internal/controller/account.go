@@ -39,7 +39,7 @@ func (h *ctrl) newAccount(c echo.Context) error {
 }
 
 func (h *ctrl) getAccount(c echo.Context) error {
-	accountID, err := models.ParseID(c.Param("id"))
+	accountID, err := models.ParseSID(c.Param("id"))
 	if err != nil {
 		return responseError(c, err)
 	}

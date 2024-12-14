@@ -15,8 +15,8 @@ import (
 
 func Test_Load(t *testing.T) {
 	var (
-		userCount                  = 100
-		depositCount               = 5
+		userCount                  = 200
+		depositCount               = 10
 		amount       models.Amount = 10
 		wg           sync.WaitGroup
 	)

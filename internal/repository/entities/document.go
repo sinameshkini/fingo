@@ -20,9 +20,9 @@ type Document struct {
 	Balance        models.Amount
 }
 
-func (d *Document) ToResponse(userID string) (resp *endpoint.TransferResponse) {
+func (d *Document) ToResponse(userID string) (resp *endpoint.TransactionResponse) {
 	if d.Account != nil && d.Account.UserID == userID {
-		return &endpoint.TransferResponse{
+		return &endpoint.TransactionResponse{
 			CreatedAt:       d.CreatedAt,
 			TransactionID:   d.TransactionID.String(),
 			OrderID:         d.Transaction.OrderID,
@@ -38,7 +38,7 @@ func (d *Document) ToResponse(userID string) (resp *endpoint.TransferResponse) {
 	return nil
 }
 
-func (d *Document) BeforeCreate(tx *gorm.DB) error {
-	d.ID = models.Next()
+func (d *Document) BeforeCreate(_ *gorm.DB) error {
+	d.ID = models.NextSID()
 	return nil
 }
