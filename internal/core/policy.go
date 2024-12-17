@@ -5,7 +5,24 @@ import (
 	"github.com/sinameshkini/fingo/internal/repository/entities"
 	"github.com/sinameshkini/fingo/pkg/endpoint"
 	"github.com/sinameshkini/fingo/pkg/enums"
+	"github.com/sinameshkini/microkit/models"
 )
+
+func (c *Core) FetchPolicies(ctx context.Context, req endpoint.FetchPoliciesRequest) (resp []*entities.Policy, meta *models.PaginationResponse, err error) {
+	return c.repo.FetchPolicies(ctx, req)
+}
+
+func (c *Core) CreatePolicy(ctx context.Context, req entities.Policy) (resp *entities.Policy, err error) {
+	return c.repo.CreatePolicy(ctx, req)
+}
+
+func (c *Core) UpdatePolicy(ctx context.Context, policyID models.SID, req entities.Policy) (resp *entities.Policy, err error) {
+	return c.repo.UpdatePolicy(ctx, policyID, req)
+}
+
+func (c *Core) DeletePolicy(ctx context.Context, policyID models.SID) (err error) {
+	return c.repo.DeletePolicy(ctx, policyID)
+}
 
 func (c *Core) GetSettings(ctx context.Context, req endpoint.GetSettingsRequest) (settings *entities.Settings, err error) {
 	var (

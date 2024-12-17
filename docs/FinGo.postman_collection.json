@@ -1,0 +1,476 @@
+{
+	"info": {
+		"_postman_id": "68ea17bf-23e0-499f-a2ea-91f1725d54aa",
+		"name": "FinGo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4687161"
+	},
+	"item": [
+		{
+			"name": "Policy",
+			"item": [
+				{
+					"name": "Fetch",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/policies",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"EntityType\": \"user_group\",\n    \"EntityID\": \"\",\n    \"Settings\": {\n        \"Limits\": {\n            \"2\": {\n                \"MinBalance\": 0,\n                \"MaxBalance\": 10000000,\n                \"NumberOfAccounts\": 1\n            }\n        },\n        \"Codes\": null,\n        \"DefaultAccountTypeID\": \"2\"\n    },\n    \"Priority\": 0,\n    \"IsEnable\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/policies",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"EntityType\": \"user_group\",\n    \"EntityID\": \"123\",\n    \"Settings\": {\n        \"Limits\": {\n            \"2\": {\n                \"MinBalance\": 0,\n                \"MaxBalance\": 10000000,\n                \"NumberOfAccounts\": 1\n            }\n        },\n        \"Codes\": null,\n        \"DefaultAccountTypeID\": \"2\"\n    },\n    \"Priority\": 0,\n    \"IsEnable\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/policies/1868881572468363264",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"policies",
+								"1868881572468363264"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/policies/1868881572468363264",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"policies",
+								"1868881572468363264"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Settings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/settings",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"settings"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Configuration",
+			"item": [
+				{
+					"name": "Account Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/account_types",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"account_types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Currencies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/currencies",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"currencies"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "Get By ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"admin\",\n    \"account_type_id\": \"2\",\n    \"currency_id\": 1,\n    \"name\": \"New Account\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/accounts/1868884220986789888",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"accounts",
+								"1868884220986789888"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List By UserID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/accounts?user_id=admin",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"accounts"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "admin"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"admin\",\n    \"account_type_id\": \"2\",\n    \"currency_id\": 1,\n    \"name\": \"New Account\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/accounts",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transaction",
+			"item": [
+				{
+					"name": "Inquiry",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"admin\",\n    \"account_id\": \"1868884220986789888\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/inquiry?transaction_id&order_id&user_id",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"inquiry"
+							],
+							"query": [
+								{
+									"key": "transaction_id",
+									"value": null
+								},
+								{
+									"key": "order_id",
+									"value": null
+								},
+								{
+									"key": "user_id",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transfer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"user_id\": \"admin\",\n   \"order_id\": \"1234\",\n   \"type\": \"deposit\",\n   \"total_amount\": 1000,\n   \"description\": \"Deposit test\",\n   \"transfers\": [\n      {\n         \"debit_account_id\": \"1868886837016137728\",\n         \"credit_account_id\": \"1868886841319493632\",\n         \"amount\": 1000,\n         \"comment\": \"Deposit\"\n      }\n   ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/transfer",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "History",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"admin\",\n    \"account_id\": \"1868884220986789888\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/history",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reverse",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": \"admin\",\n    \"transaction_id\": \"1868884220986789888\",\n    \"description\": \"\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/reverse",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"reverse"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/status",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"status"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "running",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/status",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"status"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"running\"\n}"
+				},
+				{
+					"name": "failed",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/status",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"status"
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": \"failed\"\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "http://localhost:4000/v1",
+			"type": "string"
+		}
+	]
+}

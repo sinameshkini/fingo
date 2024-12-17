@@ -10,13 +10,13 @@
 - Manage transactions, accounts balance and history
 
 
-- [ ] Configuration
+- [x] Configuration
   - [x] Account Type
   - [x] Currencies
-  - [ ] Policies
+  - [x] Policies
     - [x] Get
-    - [ ] Create
-    - [ ] Update
+    - [x] Create
+    - [x] Update
 - [ ] Account
   - [x] Create new
   - [x] Get with balance
@@ -28,6 +28,8 @@
   - [x] Inquiry
   - [x] History
   - [x] Multi Transfer
+  - [x] Worker Pool
+- [ ] Requests Validation
 
 
 ---

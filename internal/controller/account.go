@@ -12,7 +12,7 @@ func (h *ctrl) accountTypes(c echo.Context) error {
 		return responseError(c, err)
 	}
 
-	return response(c, resp)
+	return response(c, resp, nil)
 }
 
 func (h *ctrl) currencies(c echo.Context) error {
@@ -21,7 +21,7 @@ func (h *ctrl) currencies(c echo.Context) error {
 		return responseError(c, err)
 	}
 
-	return response(c, resp)
+	return response(c, resp, nil)
 }
 
 func (h *ctrl) newAccount(c echo.Context) error {
@@ -35,7 +35,7 @@ func (h *ctrl) newAccount(c echo.Context) error {
 		return responseError(c, err)
 	}
 
-	return response(c, resp)
+	return response(c, resp, nil)
 }
 
 func (h *ctrl) getAccount(c echo.Context) error {
@@ -49,7 +49,7 @@ func (h *ctrl) getAccount(c echo.Context) error {
 		return responseError(c, err)
 	}
 
-	return response(c, resp)
+	return response(c, resp, nil)
 }
 
 func (h *ctrl) getAccounts(c echo.Context) error {
@@ -60,5 +60,5 @@ func (h *ctrl) getAccounts(c echo.Context) error {
 		return responseError(c, err)
 	}
 
-	return response(c, resp)
+	return response(c, resp, nil)
 }

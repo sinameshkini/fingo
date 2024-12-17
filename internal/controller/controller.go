@@ -28,6 +28,12 @@ func Init(conf config.Config, c *core.Core) error {
 	api.GET("/currencies", h.currencies)
 	api.GET("/settings", h.getSettings)
 
+	// Policy routes
+	api.GET("/policies", h.fetchPolicies)
+	api.POST("/policies", h.createPolicy)
+	api.PUT("/policies/:id", h.updatePolicy)
+	api.DELETE("/policies/:id", h.deletePolicy)
+
 	// Account routes
 	api.POST("/accounts", h.newAccount)
 	api.GET("/accounts/:id", h.getAccount)
@@ -42,11 +48,12 @@ func Init(conf config.Config, c *core.Core) error {
 	return e.Start(conf.Address)
 }
 
-func response(c echo.Context, payload any) error {
+func response(c echo.Context, payload, meta any) error {
 	return c.JSON(http.StatusOK, entities.Response{
 		Code:    0,
 		Message: "success",
 		Data:    payload,
+		Meta:    meta,
 	})
 }
 

@@ -45,6 +45,11 @@ type Repository interface {
 	GetByOrderID(ctx context.Context, userID, orderID string) (resp []*entities.Transaction, err error)
 	GetHistory(ctx context.Context, req endpoint.HistoryRequest) (resp []*entities.Document, meta *models.PaginationResponse, err error)
 
+	FetchPolicies(ctx context.Context, req endpoint.FetchPoliciesRequest) (resp []*entities.Policy, meta *models.PaginationResponse, err error)
+	CreatePolicy(ctx context.Context, req entities.Policy) (resp *entities.Policy, err error)
+	UpdatePolicy(ctx context.Context, policyID models.SID, req entities.Policy) (resp *entities.Policy, err error)
+	DeletePolicy(ctx context.Context, policyID models.SID) (err error)
+
 	GetPolicies(ctx context.Context, userID, accountID, accountType string) ([]*entities.Policy, error)
 	GetAccountTypes(ctx context.Context) ([]*entities.AccountType, error)
 	GetAccountType(ctx context.Context, id string) (*entities.AccountType, error)

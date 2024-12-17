@@ -142,6 +142,15 @@ func (c *Core) Reverse(ctx context.Context, req endpoint.ReverseRequest) (resp *
 }
 
 func (c *Core) History(ctx context.Context, req endpoint.HistoryRequest) (resp *endpoint.HistoryResponse, err error) {
+	account, err := c.GetAccount(ctx, models.ParseSIDf(req.AccountID))
+	if err != nil {
+		return
+	}
+
+	if account.UserID != req.UserID {
+		return nil, enums.ErrPermissionDenied
+	}
+
 	resp = &endpoint.HistoryResponse{}
 	docs, meta, err := c.repo.GetHistory(ctx, req)
 	if err != nil {

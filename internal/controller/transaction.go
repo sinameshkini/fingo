@@ -31,7 +31,7 @@ func (h *ctrl) reverse(c echo.Context) error {
 		return responseError(c, err)
 	}
 
-	return response(c, resp)
+	return response(c, resp, nil)
 }
 
 func (h *ctrl) inquiry(c echo.Context) error {
@@ -45,7 +45,7 @@ func (h *ctrl) inquiry(c echo.Context) error {
 		return responseError(c, err)
 	}
 
-	return response(c, resp)
+	return response(c, resp, nil)
 }
 
 func (h *ctrl) history(c echo.Context) error {
@@ -59,5 +59,5 @@ func (h *ctrl) history(c echo.Context) error {
 		return responseError(c, err)
 	}
 
-	return response(c, resp)
+	return response(c, resp, nil)
 }
