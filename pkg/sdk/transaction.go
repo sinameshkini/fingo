@@ -6,6 +6,7 @@ import (
 	"github.com/sinameshkini/fingo/internal/repository/entities"
 	"github.com/sinameshkini/fingo/pkg/endpoint"
 	"github.com/sinameshkini/microkit/pkg/utils"
+	"time"
 )
 
 func (c *Client) Transfer(req endpoint.TransactionRequest) (resp *endpoint.TransactionResponse, err error) {
@@ -29,6 +30,7 @@ func (c *Client) Transfer(req endpoint.TransactionRequest) (resp *endpoint.Trans
 		return
 	}
 
+	time.Sleep(100 * time.Millisecond)
 	return
 }
 

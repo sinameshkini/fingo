@@ -9,6 +9,7 @@ import (
 	"github.com/sinameshkini/fingo/pkg/sdk"
 	"github.com/sinameshkini/microkit/models"
 	"github.com/sinameshkini/microkit/pkg/utils"
+	"time"
 )
 
 func CreateAccount(cli *sdk.Client, userID, accountType, name string) (resp *endpoint.AccountResponse, err error) {
@@ -157,6 +158,8 @@ func NormalActor(baseURL, userID, shadow string, cnt int, amount models.Amount) 
 
 		utils.PrintJson(depositTxn)
 	}
+
+	time.Sleep(time.Second * 10)
 
 	account, err = GetAccount(cli, userID, enums.ACCOUNTTYPEWALLET)
 	if err != nil {

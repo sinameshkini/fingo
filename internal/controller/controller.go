@@ -50,6 +50,14 @@ func response(c echo.Context, payload any) error {
 	})
 }
 
+func accept(c echo.Context, payload any) error {
+	return c.JSON(http.StatusAccepted, entities.Response{
+		Code:    0,
+		Message: "accepted",
+		Data:    payload,
+	})
+}
+
 func responseError(c echo.Context, err error) error {
 	resp := entities.Response{
 		Code:    1,

@@ -9,6 +9,7 @@ import (
 	"github.com/sinameshkini/fingo/pkg/endpoint"
 	"github.com/sinameshkini/fingo/pkg/enums"
 	"github.com/sinameshkini/microkit/models"
+	"github.com/sinameshkini/microkit/pkg/utils"
 	"time"
 )
 
@@ -140,7 +141,7 @@ func (c *Core) Reverse(ctx context.Context, req endpoint.ReverseRequest) (resp *
 	return c.GetTransaction(ctx, reverseTxn.UserID, reverseTxn.ID)
 }
 
-func (c *Core) GetTransactions(ctx context.Context, req endpoint.HistoryRequest) (resp *endpoint.HistoryResponse, err error) {
+func (c *Core) History(ctx context.Context, req endpoint.HistoryRequest) (resp *endpoint.HistoryResponse, err error) {
 	resp = &endpoint.HistoryResponse{}
 	docs, meta, err := c.repo.GetHistory(ctx, req)
 	if err != nil {
@@ -171,4 +172,33 @@ func (c *Core) Inquiry(ctx context.Context, req endpoint.InquiryRequest) (resp [
 	}
 
 	return
+}
+
+// Enqueue adds a new transaction to the queue
+func (c *Core) Enqueue(req endpoint.TransactionRequest) {
+	c.wg.Add(1)
+	go func() {
+		defer c.wg.Done()
+		c.queue <- req
+	}()
+}
+
+// startWorker starts a single worker to process transactions serially
+func (c *Core) startWorker() {
+	go func() {
+		for req := range c.queue {
+			// TODO handle error
+			resp, err := c.Transfer(context.Background(), req)
+			if err != nil {
+				log.Error(fmt.Sprintf("transaction_error: %+v", err))
+			}
+			utils.PrintJson(resp)
+		}
+	}()
+}
+
+// Stop waits for all transactions to complete and closes the queue
+func (c *Core) Stop() {
+	c.wg.Wait()
+	close(c.queue)
 }

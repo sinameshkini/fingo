@@ -52,39 +52,18 @@ type TransactionResponse struct {
 }
 
 type TransferResponse struct {
-	DocumentType enums.DocumentType `json:"document_type"`
-	Comment      string             `json:"comment"`
-	Amount       models.Amount      `json:"amount"`
-	Balance      models.Amount      `json:"balance"`
+	TransactionID   string                `json:"transaction_id"`
+	CreatedAt       time.Time             `json:"created_at"`
+	UserID          string                `json:"user_id"`
+	OrderID         string                `json:"order_id"`
+	TransactionType enums.TransactionType `json:"transaction_type"`
+	Description     string                `json:"description"`
+	TotalAmount     models.Amount         `json:"total_amount"`
+	DocumentType    enums.DocumentType    `json:"document_type"`
+	Comment         string                `json:"comment"`
+	Amount          models.Amount         `json:"amount"`
+	Balance         models.Amount         `json:"balance"`
 }
-
-//
-//type TransferRequest struct {
-//	UserID          string                `json:"user_id"`
-//	Type            enums.TransactionType `json:"type"`
-//	OrderID         string                `json:"order_id"`
-//	SkipLock        bool                  `json:"skip_lock"`
-//	DebitAccountID  string                `json:"debit_account_id"`
-//	CreditAccountID string                `json:"credit_account_id"`
-//	FeeAccountID    string                `json:"fee_account_id"`
-//	RawAmount       models.Amount         `json:"raw_amount"`
-//	FeeAmount       models.Amount         `json:"fee_amount"`
-//	TotalAmount     models.Amount         `json:"total_amount"`
-//	Description     string                `json:"description"`
-//	FeeDescription  string                `json:"fee_description"`
-//}
-//
-//type TransferResponse struct {
-//	CreatedAt       time.Time             `json:"created_at"`
-//	TransactionID   string                `json:"transaction_id"`
-//	OrderID         string                `json:"order_id"`
-//	TransactionType enums.TransactionType `json:"transaction_type"`
-//	DocumentType    enums.DocumentType    `json:"document_type"`
-//	Description     string                `json:"description"`
-//	Comment         string                `json:"comment"`
-//	Amount          models.Amount         `json:"amount"`
-//	Balance         models.Amount         `json:"balance"`
-//}
 
 type ReverseRequest struct {
 	TransactionID string `json:"transaction_id"`

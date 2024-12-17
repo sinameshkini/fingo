@@ -165,9 +165,8 @@ func Test_Transfer_With_Fee(t *testing.T) {
 	}
 
 	inquiryResp, err := cli.Inquiry(endpoint.InquiryRequest{
-		TransactionID: depositTxn.TransactionID,
-		UserID:        "admin",
-		//OrderID:       depositTxn.OrderID,
+		UserID:  "admin",
+		OrderID: depositTxn.OrderID,
 	})
 	if err != nil {
 		t.Error(err.Error())

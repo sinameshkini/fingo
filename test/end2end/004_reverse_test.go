@@ -50,11 +50,19 @@ func Test_Reverse(t *testing.T) {
 		t.FailNow()
 	}
 
-	utils.PrintJson(depositTxn)
+	//utils.PrintJson(depositTxn)
+	inquiryResp, err := cli.Inquiry(endpoint.InquiryRequest{
+		UserID:  "admin",
+		OrderID: depositTxn.OrderID,
+	})
+	if err != nil {
+		t.Error(err.Error())
+		t.FailNow()
+	}
 
 	reverseTxn, err := cli.Reverse(endpoint.ReverseRequest{
 		UserID:        "admin",
-		TransactionID: depositTxn.TransactionID,
+		TransactionID: inquiryResp[0].TransactionID,
 	})
 	if err != nil {
 		t.Error(err.Error())

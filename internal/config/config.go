@@ -18,7 +18,7 @@ type Env struct {
 
 var DefaultConf = Config{
 	Env: &Env{
-		Lock: true,
+		Lock: false,
 	},
 	Address: ":4000",
 	Database: &database.Config{

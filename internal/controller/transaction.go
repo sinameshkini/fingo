@@ -11,12 +11,13 @@ func (h *ctrl) transfer(c echo.Context) error {
 		return responseError(c, err)
 	}
 
-	resp, err := h.core.Transfer(c.Request().Context(), req)
-	if err != nil {
-		return responseError(c, err)
-	}
+	//resp, err := h.core.Transfer(c.Request().Context(), req)
+	//if err != nil {
+	//	return responseError(c, err)
+	//}
+	h.core.Enqueue(req)
 
-	return response(c, resp)
+	return accept(c, req)
 }
 
 func (h *ctrl) reverse(c echo.Context) error {
@@ -53,7 +54,7 @@ func (h *ctrl) history(c echo.Context) error {
 		return responseError(c, err)
 	}
 
-	resp, err := h.core.GetTransactions(c.Request().Context(), req)
+	resp, err := h.core.History(c.Request().Context(), req)
 	if err != nil {
 		return responseError(c, err)
 	}
